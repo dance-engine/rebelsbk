@@ -1,7 +1,7 @@
-org: danceenginesystems # Needs a name for the organization
+org: connorkmorg # Needs a name for the organization
 
-app: dance-engine
-service: api # Do we need multiple services? 
+app: dance-engine-rebelsbk
+service: api-rebelsbk # Do we need multiple services? 
 frameworkVersion: '4.1'
 
 plugins:
@@ -22,10 +22,10 @@ package:
 stages:
   default:
     observability: false
-    params:
-      eventTableName: "${sls:stage}-MLF24"
-      attendeesTableName: "${sls:stage}-mlf-attendees"
-      stripeProductsTableName: "${sls:stage}-mlf-stripe-products"
+    params: 
+      eventTableName: "${sls:stage}-rebelsbk"
+      attendeesTableName: "${sls:stage}-rebelsbk-attendees"
+      stripeProductsTableName: "${sls:stage}-rebelsbk-stripe-products"
       isProd: false
       deletionPolicy: Delete 
       skipTables: true
@@ -65,7 +65,7 @@ provider:
           Resource:
             - Fn::GetAtt: [AttendeesTable, Arn]
             - Fn::GetAtt: [StripeProductsTable, Arn]
-            - Fn::GetAtt: [MLF24Table, Arn]
+            - Fn::GetAtt: [EventTable, Arn]
             - { "Fn::Join": [ "/", [ 
                 { "Fn::GetAtt": ["AttendeesTable", "Arn" ] }, "index", "ticket_number-index" 
               ]]}
@@ -136,7 +136,7 @@ resources:
         TableName: ${param:stripeProductsTableName}
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
-    MLF24Table:
+    EventTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: ${param:deletionPolicy}
       Properties:
@@ -168,7 +168,7 @@ functions:
   CardPayment:
     runtime: python3.11
     handler: card_payment/lambda_function.lambda_handler
-    name: "${sls:stage}-card_payment"
+    name: "rebelsbk-${sls:stage}--card_payment"
     package:
       patterns:
         - '!**/**'
@@ -190,7 +190,7 @@ functions:
   CheckoutComplete:
     runtime: python3.11
     handler: checkout_complete/lambda_function.lambda_handler
-    name: "${sls:stage}-checkout_complete"
+    name: "rebelsbk-${sls:stage}--checkout_complete"
     package:
       patterns:
         - '!**/**'
@@ -216,7 +216,7 @@ functions:
   CreateTicket:
     runtime: python3.11
     handler: create_ticket/lambda_function.lambda_handler
-    name: "${sls:stage}-create_ticket"
+    name: "rebelsbk-${sls:stage}--create_ticket"
     package:
       patterns:
         - '!**/**'
@@ -236,7 +236,7 @@ functions:
   CustomerPreferences:
     runtime: python3.11
     handler: customer_preferences/lambda_function.lambda_handler
-    name: "${sls:stage}-customer-preferences"
+    name: "rebelsbk-${sls:stage}--customer-preferences"
     package:
       patterns:
         - '!**/**'
@@ -262,7 +262,7 @@ functions:
   GeneratePricingUpdate:
     runtime: python3.11
     handler: gen_price_update/lambda_function.lambda_handler
-    name: "${sls:stage}-gen_price_update"
+    name: "rebelsbk-${sls:stage}--gen_price_update"
     package:
       patterns:
         - '!**/**'
@@ -297,7 +297,7 @@ functions:
   GetAttendees:
     runtime: python3.11
     handler: get_attendees/lambda_function.lambda_handler
-    name: "${sls:stage}-get_attendees"
+    name: "rebelsbk-${sls:stage}--get_attendees"
     package:
       patterns:
         - '!**/**'
@@ -316,7 +316,7 @@ functions:
   ScanTicket:
     runtime: python3.11
     handler: scan_ticket/lambda_function.lambda_handler
-    name: "${sls:stage}-scan_ticket"
+    name: "rebelsbk-${sls:stage}--scan_ticket"
     package:
       patterns:
         - '!**/**'
@@ -342,7 +342,7 @@ functions:
   SendEmail:
     runtime: python3.11
     handler: send_email/lambda_function.lambda_handler
-    name: "${sls:stage}-send_email"
+    name: "rebelsbk-${sls:stage}--send_email"
     package:
       patterns:
         - '!**/**'
@@ -362,7 +362,7 @@ functions:
   SendTicket:
     runtime: python3.11
     handler: send_ticket/lambda_function.lambda_handler
-    name: "${sls:stage}-send_ticket"
+    name: "rebelsbk-${sls:stage}--send_ticket"
     package:
       patterns:
         - '!**/**'
@@ -385,7 +385,7 @@ functions:
   StripePriceUpdate:
     runtime: python3.11
     handler: stripe_price_update/lambda_function.lambda_handler
-    name: "${sls:stage}-stripe_price_update"
+    name: "rebelsbk-${sls:stage}--stripe_price_update"
     package:
       patterns:
         - '!**/**'
@@ -408,7 +408,7 @@ functions:
   TransferOwner:
     runtime: python3.11
     handler: transfer_owner/lambda_function.lambda_handler
-    name: "${sls:stage}-transfer_owner"
+    name: "rebelsbk-${sls:stage}--transfer_owner"
     package:
       patterns:
         - '!**/**'
@@ -432,7 +432,7 @@ functions:
   MailDev:
     runtime: python3.11
     handler: maildev/lambda_function.maildev
-    name: "${sls:stage}-maildev"
+    name: "rebelsbk-${sls:stage}--maildev"
     package:
       patterns:
         - '!**/**'
@@ -454,7 +454,7 @@ functions:
   ImportTickets:
     runtime: python3.11
     handler: import_tickets/lambda_function.lambda_handler
-    name: "${sls:stage}-import_tickets"
+    name: "rebelsbk-${sls:stage}--import_tickets"
     package:
       patterns:
         - '!**/**'
@@ -475,7 +475,7 @@ functions:
   AttendeeGroups:
     runtime: python3.11
     handler: attendee_groups/lambda_function.lambda_handler
-    name: "${sls:stage}-attendee_groups"
+    name: "rebelsbk-${sls:stage}--attendee_groups"
     package:
       patterns:
         - '!**/**'
@@ -505,7 +505,7 @@ functions:
   MealReminder:
     runtime: python3.11
     handler: meal_reminder/lambda_function.lambda_handler
-    name: "${sls:stage}-meal_reminder"
+    name: "rebelsbk-${sls:stage}--meal_reminder"
     timeout: 60
     package:
       patterns:
@@ -527,7 +527,7 @@ functions:
   MealGroups:
     runtime: python3.11
     handler: meal_groups/lambda_function.lambda_handler
-    name: "${sls:stage}-meal_groups"
+    name: "rebelsbk-${sls:stage}--meal_groups"
     package:
       patterns:
         - '!**/**'
@@ -546,7 +546,7 @@ functions:
   MealSummary:
     runtime: python3.11
     handler: meal_summary/lambda_function.lambda_handler
-    name: "${sls:stage}-meal_summary"
+    name: "rebelsbk-${sls:stage}--meal_summary"
     package:
       patterns:
         - '!**/**'
@@ -566,7 +566,7 @@ functions:
   TicketUpgrade:
     runtime: python3.11
     handler: ticket_upgrade/lambda_function.lambda_handler
-    name: "${sls:stage}-ticket_upgrade"
+    name: "rebelsbk-${sls:stage}--ticket_upgrade"
     package:
       patterns:
         - '!**/**'
@@ -587,7 +587,7 @@ functions:
   TicketActive:
     runtime: python3.11
     handler: ticket_active/lambda_function.lambda_handler
-    name: "${sls:stage}-ticket_active"
+    name: "rebelsbk-${sls:stage}--ticket_active"
     package:
       patterns:
         - '!**/**'
@@ -611,7 +611,7 @@ functions:
   MealSeating:
     runtime: python3.11
     handler: meal_seating/lambda_function.lambda_handler
-    name: "${sls:stage}-meal_seating"
+    name: "rebelsbk-${sls:stage}--meal_seating"
     timeout: 120
     package:
       patterns:
@@ -636,7 +636,7 @@ functions:
   CheckoutCompleteInperson:
     runtime: python3.11
     handler: checkout_complete_inperson/lambda_function.lambda_handler
-    name: "${sls:stage}-checkout_complete_inperson"
+    name: "rebelsbk-${sls:stage}--checkout_complete_inperson"
     package:
       patterns:
         - '!**/**'
