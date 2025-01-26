@@ -11,36 +11,6 @@
         "href": "feedback",
         "label": "Feedback",
         "visible": true
-      },
-      {
-        "href": "home",
-        "label": "Home",
-        "visible": false
-      },
-      {
-        "href": "timetable",
-        "label": "Timetable",
-        "visible": true
-      },
-      {
-        "href": "artists",
-        "label": "Artists",
-        "visible": true
-      },
-      {
-        "href": "tickets",
-        "label": "Tickets",
-        "visible": true
-      },
-      {
-        "href": "meal",
-        "label": "Meal",
-        "visible": true
-      },
-      {
-        "href": "accomodation",
-        "label": "Hotel",
-        "visible": false
       }
     ]
   },
