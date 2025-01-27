@@ -38,13 +38,14 @@ export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
     purple: "from-purple-400 to-purple-600",
     orange: "from-orange-300 to-orange-600",
     yellow: "from-yellow-400 to-yellow-600",
+    transparent: "from-white to-gray-200"
   };
 
   return (
     <>
     <Section color={data.color} backgroundImage={data.backgroundimage}>
       <Container
-        size="medium"
+        size="top"
         className="grid grid-cols-1 md:grid-cols-5 gap-0 md:gap-14 items-start justify-center"
       >
         <div className="row-start-2 md:row-start-1 md:col-span-5 text-center md:text-left ">
@@ -66,7 +67,7 @@ export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
                 className={`bg-clip-text text-transparent bg-gradient-to-r  ${
                   data.color === "primary"
                     ? `from-white to-gray-100`
-                    : headlineColorClasses["blue"]
+                    : headlineColorClasses[data.color]
                 }`}
               >
                 {data.headline}
@@ -75,7 +76,7 @@ export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
           )}
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex flex-col md:w-1/2">
-              {data.text && (
+              {data.text && data.text.children && data.text.children.length > 0 &&  (
                 <div
                   data-tina-field={tinaField(data, "text")}
                   className={`prose md:prose-lg mx-auto md:mx-0 mb-10 z-10 ${
@@ -99,7 +100,7 @@ export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
               )}
             </div>
 
-            <div className='rounded-3xl md:w-full max-w-lg mx-auto mb-6 md:mb-12 bg-richblack-600 border-gray-700 border text-white p-8 text-center z-30'>
+            {/* <div className='rounded-3xl md:w-full max-w-lg mx-auto mb-6 md:mb-12 bg-richblack-600 border-gray-700 border text-white p-8 text-center z-30'>
               <h2 className='text-2xl md:text-3xl font-bold'>Limited time deal</h2>
               <p className=''>
                 Currently we are offering an early bird price at an incredible saving <br/>
@@ -109,7 +110,7 @@ export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
                 </button>
               </p>
             
-            </div>
+            </div> */}
             
           </div>
           {data.text2 && data.text2.children && data.text2.children.length > 0 && (
@@ -125,8 +126,8 @@ export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
         </div>
       </Container>
     </Section>
-    <Section>
-      <Container size='medium' width="huge">
+    <Section color={data.color} backgroundImage={data.backgroundimage}>
+      <Container size='custom' width="huge">
         <div ref={packagesSuggestorRef}>
           <PricingTable fullPassFunction={setFullPassSelectFunction} scrollToElement={scrollToElement}></PricingTable>
         </div>
@@ -220,7 +221,7 @@ export const pricingBlockSchema: Template = {
       label: "Color",
       name: "color",
       options: [
-        { label: "Default", value: "default" },
+        { label: "Default", value: "transparent" },
         { label: "Tint", value: "tint" },
         { label: "Primary", value: "primary" },
       ],

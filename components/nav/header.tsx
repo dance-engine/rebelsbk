@@ -19,7 +19,8 @@ const headerColor = {
     purple: "text-white from-purple-400 to-purple-500",
     orange: "text-white from-orange-400 to-orange-500",
     yellow: "text-white from-yellow-400 to-yellow-500",
-    merseyside: "text-white from-richblack-500 to-richblack-500",
+    merseyside: "text-white from-richblack-400 to-richblack-500",
+    rebelsbk: "text-white dark:from-[#e83786] dark:to-[#b42a68]"
   },
 };
 

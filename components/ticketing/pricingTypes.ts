@@ -9,23 +9,15 @@ export type Ticket = {
 };
 
 export type DayTickets = {
-  Party: Ticket;
-  Classes?: Ticket;
-  Dinner?: Ticket;
+  Prebook: Ticket;
 };
 export type IndividualTickets = {
-  Friday: DayTickets;
-  Saturday: DayTickets;
-  Sunday: DayTickets;
-  NextYear: DayTickets;
+  Feb: DayTickets;
 };
 
-export type PartialDayOption = { Party: boolean; Classes?: boolean; Dinner?: boolean; }
+export type PartialDayOption = { Prebook: boolean; }
 export type PartialSelectedOptions = {
-  Friday?: PartialDayOption;
-  Saturday?: PartialDayOption;
-  Sunday?: PartialDayOption;
-  NextYear?: PartialDayOption;
+  Feb?: PartialDayOption;
 };
 
 export type Pass = {

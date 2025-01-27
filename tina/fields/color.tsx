@@ -12,6 +12,7 @@ export const colorOptions = [
   "purple",
   "white",
   "merseyside",
+  "rebelsbk"
 ];
 
 export const ColorPickerInput = wrapFieldsWithMeta(({ input }) => {
@@ -26,6 +27,7 @@ export const ColorPickerInput = wrapFieldsWithMeta(({ input }) => {
     purple: "bg-purple-500 border-purple-600",
     white: "bg-white border-gray-150",
     merseyside: "bg-richblack-500 border-richblack-500",
+    rebelsbk: "bg-yellow-500 border-yellow-700"
   };
 
   return (

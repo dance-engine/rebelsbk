@@ -35,7 +35,7 @@ export default function PassCards({currentSelectedOptions, setSelectedOptions, p
   return (
     <div className="isolate overflow-hidden ">
       <div className='mb-6'>
-      { basic ? null : <>
+      { basic || !withHero ? null : <>
         <h1 className='text-4xl font-bold'>Pass options</h1> 
         <p>Select your pass below or tick the items you want and we&#39;ll work it out for you</p>
       </>}

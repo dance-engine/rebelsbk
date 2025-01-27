@@ -57,10 +57,11 @@ export const Section = ({ children, color = "", className = "" , backgroundImage
         className={`flex-1 relative transition duration-150 ease-out body-font overflow-hidden ${sectionColorCss} ${className}`}
       > 
         <div
-        className="absolute inset-0 bg-gradient-to-b bg-cover from-gray-50 to-transparent dark:from-gray-900 dark:to-transparent"
+        className="absolute inset-0 bg-gradient-to-b bg-cover from-gray-50 to-transparent dark:from-gray-900 dark:to-transparent z-1 "
         style={{
           backgroundImage: `url(${backgroundImage})`,
-          opacity: 0.2,
+          backgroundPositionX: '50%',
+          opacity: 0.7,
         }}
       />
       {children}

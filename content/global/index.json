@@ -4,7 +4,7 @@
       "color": "yellow",
       "style": "float"
     },
-    "name": "Merseyside Latin Festival 2024",
+    "name": "Rebel SBK Events",
     "color": "primary",
     "nav": [
       {
@@ -24,8 +24,8 @@
     }
   },
   "theme": {
-    "color": "merseyside",
-    "font": "sans",
+    "color": "rebelsbk",
+    "font": "lato",
     "darkMode": "dark"
   }
 }

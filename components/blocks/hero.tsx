@@ -32,7 +32,7 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
         size="medium"
         className="grid grid-cols-1 md:grid-cols-5 gap-0 md:gap-14 items-start justify-center"
       >
-        {data.image && (
+        {data.image && data.image.src && (
           <div
             data-tina-field={tinaField(data.image, "src")}
             className="relative flex-shrink-0 md:w-2/5 flex justify-center order-first md:hidden md:order-last"
@@ -51,10 +51,10 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
           {data.tagline && (
             <h2
               data-tina-field={tinaField(data, "tagline")}
-              className="relative px-3 py-1 mb-8 text-md font-bold tracking-wide title-font z-20 inline-block"
+              className="relative px-3 py-1 mb-8 text-md text-white font-bold tracking-wide title-font z-20 inline-block"
             >
               {data.tagline}
-              <span className="absolute w-full h-full left-0 top-0 rounded-full -z-1 bg-current opacity-7"></span>
+              <span className="absolute w-full h-full left-0 top-0 rounded-full -z-1 bg-[#b42a68] opacity-100"></span>
             </h2>
           )}
           
@@ -92,14 +92,14 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
               {data.actions && (
                 <div className="mt-10">
                   <Actions
-                    className="justify-center md:justify-start py-2"
+                    className="justify-center md:justify-start py-2 z-10"
                     parentColor={data.color}
                     actions={data.actions}
                   />
                 </div>
               )}
             </div>
-            {data.image && (
+            {data.image && data.image.src && (
               <div
                 data-tina-field={tinaField(data.image, "src")}
                 className={`relative flex-shrink-0 md:w-2/5 flex justify-center order-first md:order-last`}
@@ -118,7 +118,7 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
           {data.text2 && data.text2.children && data.text2.children.length > 0 && (
             <div
               data-tina-field={tinaField(data, "text2")}
-              className={`prose prose-lg mx-auto md:mx-0 mb-10 ${
+              className={`prose prose-lg mx-auto md:mx-0 mb-10 z-10 ${
                 data.color === "primary" ? `prose-primary` : `dark:prose-dark`
               }`}
             >

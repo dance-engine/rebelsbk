@@ -93,9 +93,10 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
   const cellClasses = 'border border-gray-600 text-center py-2 px-3 md:py-2 md:px-4 ';
   const headerClasses = cellClasses.replaceAll('border-gray-600','border-chillired-400')
   const toggleCellClasses = "bg-richblack-600 text-white " +  cellClasses 
-
+  const studentDiscountAvailable = false
+  
   return (
-    <div className="table-container w-full flex justify-center flex-col md:pt-12 max-w-full lg:mx-auto md:mx-3 col-span-5 text-xs md:text-base">
+    <div className="table-container w-full flex justify-center flex-col md:pt-0 max-w-full lg:mx-auto md:mx-3 col-span-5 text-xs md:text-base">
       <PassCards 
         currentSelectedOptions={selectedOptions}
         setSelectedOptions={setSelectedOptions}
@@ -106,10 +107,10 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
         withHero={false}
         ></PassCards>
       
-      <div className='mb-12'>
+      { studentDiscountAvailable && <div className='mb-12'>
         <Cell option={{name: 'I am a student and will bring Student ID', cost: 0, studentCost: 0, isAvailable: true } }
           isSelected={studentDiscount} onSelect={togglePriceModel} studentDiscount={studentDiscount} />
-      </div>
+      </div> }
       
       <OptionsTable 
         headerClasses={headerClasses}

@@ -1,6 +1,7 @@
 'use client'
-import MlfLogo from '@public/mlf-2.svg';
+// import LogoImage from '@public/rebel-demo.png';
+import Image from 'next/image'
 
 export default function Logo({className}) {
-  return <MlfLogo className={className} />;
+  return <Image className={className} alt="Rebel SBK" src="/rebel-demo.png" height={96} width={96}/>;
 }
