@@ -69,6 +69,9 @@ provider:
             - { "Fn::Join": [ "/", [ 
                 { "Fn::GetAtt": ["AttendeesTable", "Arn" ] }, "index", "ticket_number-index" 
               ]]}
+            - { "Fn::Join": [ "/", [ 
+                { "Fn::GetAtt": ["EventTable", "Arn" ] }, "index", "type-index" 
+              ]]}
         - Effect: Allow
           Action:
             - lambda:InvokeFunction
@@ -146,6 +149,8 @@ resources:
             AttributeType: S
           - AttributeName: SK
             AttributeType: S
+          - AttributeName: type
+            AttributeType: S
         KeySchema:
           - AttributeName: PK
             KeyType: HASH
@@ -153,6 +158,15 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${param:eventTableName}
+        GlobalSecondaryIndexes:
+          - IndexName: type-index
+            KeySchema:
+              - AttributeName: type 
+                KeyType: HASH
+              - AttributeName: SK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: 'ALL'        
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES   
         TimeToLiveSpecification:
@@ -651,4 +665,95 @@ functions:
 
       - httpApi:
           path: /checkout_complete_inperson
-          method: post                                 
+          method: post
+                                         
+#--------------------
+
+  EventCreate:
+    runtime: python3.11
+    handler: event_create/lambda_function.lambda_handler
+    name: "rebelsbk-${sls:stage}-event_create"
+    package:
+      patterns:
+        - '!**/**'
+        - "event_create/**"
+        - "shared/**"
+    environment:
+      STAGE_NAME: ${sls:stage}
+      EVENT_TABLE_NAME: ${param:eventTableName}
+    events:
+      - httpApi:
+          path: /event/create
+          method: post
+
+#--------------------
+
+  EventGet:
+    runtime: python3.11
+    handler: event_get/lambda_function.lambda_handler
+    name: "rebelsbk-${sls:stage}-event_get"
+    package:
+      patterns:
+        - '!**/**'
+        - "event_get/**"
+        - "shared/**"
+    layers:
+      - !Ref StripeLambdaLayer        
+    environment:
+      STAGE_NAME: ${sls:stage}
+      EVENT_TABLE_NAME: ${param:eventTableName}
+    events:
+
+      - httpApi:
+          path: /event/get
+          method: get
+
+#--------------------
+
+  IndividualItems:
+    runtime: python3.11
+    handler: individual_items/lambda_function.lambda_handler
+    name: "rebelsbk-${sls:stage}-individual_items"
+    package:
+      patterns:
+        - '!**/**'
+        - "individual_items/**"
+        - "shared/**"
+    environment:
+      STAGE_NAME: ${sls:stage}
+      EVENT_TABLE_NAME: ${param:eventTableName}
+    events:
+      - httpApi:
+          path: /individual_items
+          method: post
+      - httpApi:
+          path: /individual_items
+          method: get
+      - httpApi:
+          path: /individual_items
+          method: put
+
+#--------------------
+
+  Passes:
+    runtime: python3.11
+    handler: passes/lambda_function.lambda_handler
+    name: "rebelsbk-${sls:stage}-passes"
+    package:
+      patterns:
+        - '!**/**'
+        - "passes/**"
+        - "shared/**"
+    environment:
+      STAGE_NAME: ${sls:stage}
+      EVENT_TABLE_NAME: ${param:eventTableName}
+    events:
+      - httpApi:
+          path: /passes
+          method: post
+      - httpApi:
+          path: /passes
+          method: get
+      - httpApi:
+          path: /passes
+          method: put
