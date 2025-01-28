@@ -10,6 +10,7 @@ export type Ticket = {
 
 export type DayTickets = {
   Prebook: Ticket;
+  Advanced: Ticket;
 };
 export type IndividualTickets = {
   Feb: DayTickets;
