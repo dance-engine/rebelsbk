@@ -12,7 +12,7 @@ import { deepCopy } from '../../lib/useful'
 import symmetricDifference from 'set.prototype.symmetricdifference'
 import difference from 'set.prototype.difference'
 import useSWR from 'swr';
-import { fetcher } from '@lib/fetchers';
+import { fetcher } from '../../lib/fetchers';
 // import { getNamedRouteRegex } from 'next/dist/shared/lib/router/utils/route-regex';
 symmetricDifference.shim();
 difference.shim();
@@ -27,7 +27,8 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
   const [packageCost, setPackageCost] = useState(0)
   const router = useRouter()
 
-  const {data: pricingData, error, isLoading, isValidating} = useSWR(`/api/pricing_table?event=${"spring-salsa-festival-2025"}`, fetcher, { keepPreviousData: false });
+  // const {data: pricingData, error, isLoading, isValidating} = useSWR(`/api/pricing_table?event=${"spring-salsa-festival-2025"}`, fetcher, { keepPreviousData: false });
+  const {data: pricingData} = useSWR(`/api/pricing_table?event=${"spring-salsa-festival-2025"}`, fetcher, { keepPreviousData: false });
 
   const togglePriceModel = () => {
     setPriceModel(priceModel === "cost"? "studentCost" : "cost")
