@@ -6,18 +6,26 @@ import {IndividualTickets, Passes } from './pricingTypes'
 export const individualTickets: IndividualTickets = { 
 	Feb: { 
 		 Prebook:{
-			 cost: 14,
-			 studentCost: 12,
+			 cost: 2,
+			 studentCost: 2,
 			 isAvailable: true,
 			 priceId: 'price_1QQZObEWkmdeWsQPPK90RMv5',
 			 studentPriceId: 'price_1QQZOtEWkmdeWsQPGgDY1I8x'
-			 },
-		},		
+		},
+		Advanced:{
+			cost: 12,
+			studentCost: 10,
+			isAvailable: true,
+			priceId: 'price_1QQZObEWkmdeWsQPPK90RMv5',
+			studentPriceId: 'price_1QQZOtEWkmdeWsQPGgDY1I8x'
+		},
+	},		
  }
 
 export const initialSelectedOptions = {
 	Feb: { 
 		Prebook: false,
+		Advanced: false
 	}
  }
 
@@ -30,12 +38,22 @@ export const passes: Passes = {
 			saving: 2,
 			studentSaving: 2,
 			combination: ['Feb Prebook'],
+			description: "Guarantee your place and save, Pay £12 when you arrive",
+			priceId: 'price_1QQneIEWkmdeWsQPJhsLrRof',
+			studentPriceId: 'price_1QQnjjEWkmdeWsQPgurnBDwI'},
+	'Febuary Advanced': {
+			cost: 12,
+			studentCost: 10,
+			isAvailable: true,
+			saving: 2,
+			studentSaving: 2,
+			combination: ['Feb Prebook', 'Feb Advanced'],
 			description: "Book in advance and save on the door",
 			priceId: 'price_1QQneIEWkmdeWsQPJhsLrRof',
 			studentPriceId: 'price_1QQnjjEWkmdeWsQPgurnBDwI'},
 }
 
-export const fullPassName = Object.keys(passes).at(1)
+export const fullPassName = Object.keys(passes).at(0)
 export const days = ['Prebook']
 export const passTypes = Object.keys(individualTickets['Feb']).filter((item) => {
 	console.log(Object.keys(individualTickets['Feb']))

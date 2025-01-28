@@ -78,7 +78,7 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
     return (
       <button type="submit" disabled={pending} 
         className='bg-chillired-400 text-white rounded-lg py-6 px-12 hover:bg-chillired-700 text-nowrap w-full max-w-72 md:w-auto'>
-        {pending ? "Checking Out..." : "Buy Now"}
+        {pending ? "Checking Out..." : "Book Now"}
       </button>
 
     );

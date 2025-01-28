@@ -6,6 +6,7 @@ isubsetof.shim();
 
 // Returns a list of all pass combinations you could buy
 const generateAllPassCombinations = (passes) => {
+  console.log("passes",passes)
   const passTitles = Object.keys(passes).filter((item) => { return item != fullPassName && passes[item].isAvailable })
   const passCombinations = power(passTitles)
   // console.log(passCombinations)
@@ -80,7 +81,7 @@ const isAllPassOptions = (options: PartialSelectedOptions,passType:string) => {
 }
 const priceForPassCombination = (passCombination,priceModel) => {
   const price = passCombination.reduce((price ,passTitle) => {
-    // console.log(passTitle,passes[passTitle])
+    console.log(passTitle,passes[passTitle])
     return price + passes[passTitle][priceModel]
   },0)
   return price
@@ -129,8 +130,9 @@ const getBestCombination = (options,priceModel) => {
   }
   // const passCombinations = generateAllPassCombinations(passes)
   let bestOptions = []
-  let bestPrice = 999.00
+  let bestPrice = 9999.00
   passCombinations.forEach((passCombination: any[]) => {
+    console.log("passCombination,priceModel",passCombination,priceModel)
     const packagePrice = priceForPassCombination(passCombination,priceModel)
     const tickePrice = priceForIndividualItems(itemsNotCovered(optionsToPassArray(options),itemsFromPassCombination(passCombination)),priceModel)
     const combinedPrice = packagePrice + tickePrice

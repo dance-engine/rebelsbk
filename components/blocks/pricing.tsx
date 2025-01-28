@@ -8,11 +8,11 @@ import PricingTable from "../ticketing/PricingTable";
 import { Section } from "../layout/section";
 import { Container } from "../layout/container";
 import { Actions } from "./actions";
-import { fullPassName } from '../ticketing/pricingDefaults'
+// import { fullPassName } from '../ticketing/pricingDefaults'
 
 
 export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
-  const [fullPassSelectFunction, setFullPassSelectFunction] = useState(() => (setTo)=>{console.log("fullPassSelectFunction not set",setTo)})
+  const [setFullPassSelectFunction] = useState(() => (setTo)=>{console.log("fullPassSelectFunction not set",setTo)})
   const packagesSuggestorRef = useRef(null);
   const scrollToElement = () => {
     if (packagesSuggestorRef.current) {
@@ -28,7 +28,7 @@ export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
       console.log("packagesSuggestorRef not set");
     }
   };
-  const packages = []
+  // const packages = []
   const headlineColorClasses = {
     blue: "from-blue-400 to-blue-600",
     teal: "from-teal-400 to-teal-600",
