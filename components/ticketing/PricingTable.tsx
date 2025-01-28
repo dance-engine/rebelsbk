@@ -11,6 +11,8 @@ import { useRouter } from 'next/navigation'
 import { deepCopy } from '../../lib/useful'
 import symmetricDifference from 'set.prototype.symmetricdifference'
 import difference from 'set.prototype.difference'
+import useSWR from 'swr';
+import { fetcher } from '@lib/fetchers';
 // import { getNamedRouteRegex } from 'next/dist/shared/lib/router/utils/route-regex';
 symmetricDifference.shim();
 difference.shim();
@@ -24,6 +26,8 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
   const [packages,setPackages] = useState([])
   const [packageCost, setPackageCost] = useState(0)
   const router = useRouter()
+
+  const {data: pricingData, error, isLoading, isValidating} = useSWR(`/api/pricing_table?event=${"spring-salsa-festival-2025"}`, fetcher, { keepPreviousData: false });
 
   const togglePriceModel = () => {
     setPriceModel(priceModel === "cost"? "studentCost" : "cost")
@@ -157,6 +161,7 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
       <div className='flex'>
         <pre>Selected -- {JSON.stringify(selectedOptions,null,2)}</pre>
         <pre>Packages--{JSON.stringify(packages,null,2)}</pre>
+        <pre>PricingData--{JSON.stringify(pricingData,null,2)}</pre>
       </div>
       </> : null }
       
