@@ -72,6 +72,9 @@ provider:
             - { "Fn::Join": [ "/", [ 
                 { "Fn::GetAtt": ["EventTable", "Arn" ] }, "index", "type-index" 
               ]]}
+            - { "Fn::Join": [ "/", [ 
+                { "Fn::GetAtt": ["EventTable", "Arn" ] }, "index", "organisation-index" 
+              ]]}
         - Effect: Allow
           Action:
             - lambda:InvokeFunction
@@ -151,6 +154,8 @@ resources:
             AttributeType: S
           - AttributeName: type
             AttributeType: S
+          - AttributeName: organisation
+            AttributeType: S
         KeySchema:
           - AttributeName: PK
             KeyType: HASH
@@ -166,7 +171,15 @@ resources:
               - AttributeName: SK
                 KeyType: RANGE
             Projection:
-              ProjectionType: 'ALL'        
+              ProjectionType: 'ALL'
+          - IndexName: organisation-index 
+            KeySchema:
+              - AttributeName: organisation 
+                KeyType: HASH
+              - AttributeName: SK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: 'ALL'                      
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES   
         TimeToLiveSpecification:

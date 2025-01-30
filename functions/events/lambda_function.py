@@ -24,6 +24,8 @@ logger.setLevel("INFO")
 db = boto3.resource("dynamodb")
 table = db.Table(TABLE_NAME)
 
+def split_keys(sk):
+    return [f"{x}#{y}" for x,y in zip(sk.split("#")[0::2], sk.split("#")[1::2])]
 
 def generate_slug(name):
     """
@@ -57,18 +59,22 @@ def create_event(event_data):
             "total_capacity":   event_data.get("total_capacity"),
             "created_at":       current_time,
             "description":      event_data.get("description"),
+            "type":             "setting",
+            "organisation":     "rebel-sbk-events",
+            "type":             "event"
         }
 
         # Location item
         location_item = {
             "PK": f"EVENT#{slug_of_event}",
-            "SK": f"DETAIL#LOCATION#{slug_of_venue}",
+            "SK": f"EVENT#{slug_of_event}#LOCATION#{slug_of_venue}",
             "slug": f"{slug_of_venue}",
             "venue":    event_data["location"].get("venue"),
             "address":  event_data["location"].get("address"),
             "city":     event_data["location"].get("city"),
             "country":  event_data["location"].get("country"),
-            "type":     "location"
+            "organisation": "rebel-sbk-events",
+            "type": "location"
         }
 
         # If longitude and latitude included then add that data too
@@ -103,54 +109,109 @@ def get_events(event_slug=None, expand=None):
     try:
         if not event_slug:
             # Scan to retrieve only the top-level event entries (PK = SK)
-            response = table.scan(
-                FilterExpression=Key("PK").begins_with("EVENT#") & Key("PK").eq(Key("SK"))
+            response = table.query(
+                IndexName="organisation-index",
+                KeyConditionExpression=Key("organisation").eq("rebel-sbk-events") & Key("SK").begins_with("EVENT#"),
+                ScanIndexForward=True
             )
-            return response.get("Items", [])
-        
-        if expand and "tickets" in expand:
-            key_condition_expression = Key("PK").eq(f"EVENT#{event_slug}")
-        else:
-            # Exclude TICKET# items from the query
-            key_condition_expression = Key("PK").eq(f"EVENT#{event_slug}") & Key("SK").lt("T")
 
-        # Query for all items related to the event
-        response = table.query(
-            KeyConditionExpression=key_condition_expression
-        )
-        items = response.get("Items", [])
+            # response = table.scan(
+            #     FilterExpression=Key("PK").begins_with("EVENT#")
+            # )
+            items = response.get("Items", [])
+
+        else:
+            if expand and "tickets" in expand:
+                key_condition_expression = Key("PK").eq(f"EVENT#{event_slug}")
+            else:
+                # Exclude TICKET# items from the query
+                key_condition_expression = Key("PK").eq(f"EVENT#{event_slug}") & Key("SK").lt("T")
+
+            # Query for all items related to the event
+            response = table.query(
+                KeyConditionExpression=key_condition_expression
+            )
+            items = response.get("Items", [])
 
         if not items:
             return None  # Event not found
-
-        # Organizing the items into a nested structure
-        items_by_sk = {item["SK"]: item for item in items}
-        event = {"event": items_by_sk.pop(f"EVENT#{event_slug}", {})}
-
-        for item in list(items_by_sk.values()):
-            sk = item["SK"]
+        
+        events = []
+    
+        for i,item in enumerate(items):
             item_type = inflection.underscore(item.get("type", ""))  # Convert type to snake_case
             child_key = inflection.pluralize(item_type)  # Get plural form for list key
+            sk = item["SK"]
 
-            # Determine if the item belongs to a parent
-            parent_sk = next(
-                (parent_sk for parent_sk in items_by_sk if sk.startswith(parent_sk) and sk != parent_sk),
-                None
-            )
-
-            if parent_sk:
-                # Add to the parent's type-specific list
-                parent = items_by_sk[parent_sk]
-                if child_key not in parent:
-                    parent[child_key] = []
-                parent[child_key].append(item)
+            if item['type'] == "event":
+                events.append(item)
+            elif item['type'] == "pass-item":
+                if 'associated_items' not in current_event['passes'][-1]:
+                    current_event['passes'][-1]['associated_items'] = []    
+                current_event['passes'][-1]['associated_items'].append(item)
             else:
-                # Add to the main event
-                if child_key not in event["event"]:
-                    event["event"][child_key] = []
-                event["event"][child_key].append(item)
+                current_event = events[-1]
+                if child_key not in current_event:
+                    current_event[child_key] = []
+                current_event[child_key].append(item)
 
-        return event
+            # {
+            #     "events":[
+            #         {
+            #             ...details,
+            #             "individual_items":[
+            #                 {
+            #                     ...individual_item
+            #                 }
+            #             ],
+            #             "passes":[
+            #                 {
+            #                     ..details,
+            #                     "associatems_items":[
+            #                         {
+
+            #                         }
+            #                     ]
+            #                 }
+            #             ]
+            #         }
+            #     ]
+            # }
+
+            # if sk.startswith(items[i+1]["SK"]):
+            #     if child_key not in items[i+1]:
+            #         items[i+1][child_key] = []
+
+            #     items[i+1][child_key].append(item)
+
+        # Organizing the items into a nested structure
+        # items_by_sk = {item["SK"]: item for item in items}
+        # event = items_by_sk.pop(f"EVENT#{event_slug}", {})
+
+        # for item in list(items_by_sk.values()):
+        #     sk = item["SK"]
+        #     item_type = inflection.underscore(item.get("type", ""))  # Convert type to snake_case
+        #     child_key = inflection.pluralize(item_type)  # Get plural form for list key
+
+        #     # Determine if the item belongs to a parent
+        #     parent_sk = next(
+        #         (parent_sk for parent_sk in items_by_sk if sk.startswith(parent_sk) and sk != parent_sk),
+        #         None
+        #     )
+
+        #     if parent_sk:
+        #         # Add to the parent's type-specific list
+        #         parent = items_by_sk[parent_sk]
+        #         if child_key not in parent:
+        #             parent[child_key] = []
+        #         parent[child_key].append(item)
+        #     else:
+        #         # Add to the main event
+        #         if child_key not in event:
+        #             event[child_key] = []
+        #         event[child_key].append(item)
+
+        return events
 
     except ClientError as e:
         logger.error("DynamoDB error while retrieving events: %s", str(e))
@@ -435,7 +496,7 @@ def lambda_handler(event, context):
             events = get_events(event_slug)
             if events is None:
                 return {"statusCode": 404, "body": json.dumps({"message": "Event not found."})}
-            return {"statusCode": 200, "body": json.dumps({"events": events}, cls=DecimalEncoder)}
+            return {"statusCode": 200, "body": json.dumps(events, cls=DecimalEncoder)}
 
         elif http_method == "PUT":
             event_slug = parsed_event.get("slug")
