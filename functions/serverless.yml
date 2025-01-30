@@ -710,6 +710,33 @@ functions:
 
 #--------------------
 
+  Events:
+    runtime: python3.11
+    handler: events/lambda_function.lambda_handler
+    name: "rebelsbk-${sls:stage}-events"
+    package:
+      patterns:
+        - '!**/**'
+        - "events/**"
+        - "shared/**"
+    layers:
+      - !Ref StripeLambdaLayer        
+    environment:
+      STAGE_NAME: ${sls:stage}
+      EVENT_TABLE_NAME: ${param:eventTableName}
+    events:
+      - httpApi:
+          path: /events
+          method: post
+      - httpApi:
+          path: /events
+          method: get
+      - httpApi:
+          path: /events
+          method: put
+
+#--------------------
+
   IndividualItems:
     runtime: python3.11
     handler: individual_items/lambda_function.lambda_handler
