@@ -1,5 +1,6 @@
 import React from 'react';
 import { fullPassName } from './pricingDefaults';
+import { moneyString } from '@lib/useful'
 
 export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving, selected, included, basic, locked, hero= false}:
   {passName:string, clickFunction:any, pass:any, priceModel:string, hasASaving:boolean, selected:boolean, included?:boolean, basic?:boolean, locked?:boolean, hero?:boolean}
@@ -36,7 +37,7 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
 
         <div className={`flex ${ basic ? "flex-row justify-end": "flex-col" } items-baseline gap-x-2 place-content-center md:place-content-start col-start-3 col-span-1`}>
           <span className={`${priceTextSize} font-bold tracking-tight text-white`}>
-            £{pass[priceModel] % 1 != 0 ? pass[priceModel].toFixed(2) : pass[priceModel]}
+            {moneyString(pass[priceModel])}
           </span>
           {hasASaving && !basic? (
           <div className="mt-0 flex items-baseline gap-x-2 place-content-center	md:place-content-start">

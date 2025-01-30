@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from "react";
+import { moneyString } from '@lib/useful'
 import {getBestCombination,priceIds } from "@components/ticketing/pricingUtilities"
 import MealPreferences, { blankPreferences } from "@components/preferences/MealPreferences"
 import {Container} from "@components/layout/container"
@@ -54,6 +55,11 @@ export default function CheckoutClient() {
     setStripeProducts(selectedPassPriceIds)
   },[bestCombo,student])
 
+  const freeCheckout = (action) => {
+    alert(JSON.stringify([action,userData,preferences,stripeProducts]))
+  }
+
+
   const dinnerInfoRequired = selectedOptions && selectedOptions['Saturday'] && selectedOptions['Saturday']['Dinner']
   const stripeReady = stripeProducts && typeof stripeProducts === "object" && stripeProducts.length > 0
   const dinnerInfoProvided = (!dinnerInfoRequired || (preferences && preferences.choices && preferences.choices.every((choice) => choice >= 0)))
@@ -71,7 +77,7 @@ export default function CheckoutClient() {
           <Icon data={{name: "BiCart", color: "purple", style: "circle", size: "medium"}} className="mr-2 border border-richblack-700"></Icon>
           {student ? "Student " : null}Passes selected
         </h2>
-        {bestCombo.options.join(', ')} : £{bestCombo.price}
+        {bestCombo.options.join(', ')} : {moneyString(bestCombo.price)}
       </Container>
 
       <Container size="small" width="medium" className=" text-white w-full rounded-3xl border border-richblack-700 bg-richblack-500 py-6 transition-all	">
@@ -141,6 +147,7 @@ export default function CheckoutClient() {
        </>
     </Container>) : null }
     
+    { bestCombo.price > 0 ?
     <Container size="small" width="medium" className=" text-white w-full rounded-3xl border border-richblack-700 bg-richblack-500 py-0 md:pt-6 pb-6 md:pb-16 px-3 md:px-0 flex flex-col ">
       <h2 className="text-xl flex items-center -ml-12 md:-ml-6">
       <Icon data={{name: "BiPound", color: "green", style: "circle", size: "medium"}} className="mr-2 border border-richblack-700"></Icon>
@@ -150,7 +157,30 @@ export default function CheckoutClient() {
         <StripeForm userData={userData} preferences={preferences} products={stripeProducts}></StripeForm>
         : <div className="text-center"><h2 className="text-2xl">Not Ready for payment</h2><p>Payment form will load once you have finished editing the above information</p></div>
       }
-    </Container>
+    </Container> : 
+    <Container size="small" width="medium" className=" text-white w-full rounded-3xl border border-richblack-700 bg-richblack-500 py-0 md:pt-6 pb-6 md:pb-16 px-3 md:px-0 flex flex-col ">
+      <h2 className="text-xl flex items-center -ml-12 md:-ml-6">
+        <Icon data={{name: "BiPound", color: "green", style: "circle", size: "medium"}} className="mr-2 border border-richblack-700"></Icon>
+        It&apos;s free!
+      </h2>
+      {dinnerInfoProvided && userData.email && stripeReady && steps.details && ( steps.meal || !dinnerInfoRequired)  ?
+        <form action={freeCheckout} className="">
+          <div className="px-6 pt-6 ">
+            <button
+              type="submit"
+              className="py-2 px-4 bg-blue-500 text-white rounded-lg font-semibold shadow-sm">
+              Complete Booking
+            </button>
+          </div>
+        </form>
+        
+        : <div className="text-center"><h2 className="text-2xl">Finish adding your details</h2><p>As soon as you&apos;ve added your information we can book you in</p></div>
+      }
+      
+
+    </Container> }
+
+    
     { process.env.NODE_ENV == 'development' && process.env.NEXT_PUBLIC_INTERNAL_DEBUG == 'true' ? <>
       <hr />
       <h2>Debug Ignore below the line</h2>
