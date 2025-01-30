@@ -669,33 +669,14 @@ functions:
                                          
 #--------------------
 
-  EventCreate:
+  Events:
     runtime: python3.11
-    handler: event_create/lambda_function.lambda_handler
-    name: "rebelsbk-${sls:stage}-event_create"
+    handler: events/lambda_function.lambda_handler
+    name: "rebelsbk-${sls:stage}-events"
     package:
       patterns:
         - '!**/**'
-        - "event_create/**"
-        - "shared/**"
-    environment:
-      STAGE_NAME: ${sls:stage}
-      EVENT_TABLE_NAME: ${param:eventTableName}
-    events:
-      - httpApi:
-          path: /event/create
-          method: post
-
-#--------------------
-
-  EventGet:
-    runtime: python3.11
-    handler: event_get/lambda_function.lambda_handler
-    name: "rebelsbk-${sls:stage}-event_get"
-    package:
-      patterns:
-        - '!**/**'
-        - "event_get/**"
+        - "events/**"
         - "shared/**"
     layers:
       - !Ref StripeLambdaLayer        
@@ -703,10 +684,15 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
     events:
-
       - httpApi:
-          path: /event/get
+          path: /events
+          method: post
+      - httpApi:
+          path: /events
           method: get
+      - httpApi:
+          path: /events
+          method: put
 
 #--------------------
 
