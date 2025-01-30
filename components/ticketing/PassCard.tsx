@@ -23,7 +23,7 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
 
         <div className='col-span-2'>
           
-          <h3 id={passName} className={`${baseTextSize} leading-7 text-chillired-800 font-black uppercase w-full md:w-auto col-span-2 m-h-12`}>
+          <h3 id={passName} className={`${baseTextSize} leading-7 text-[#EA4891] font-black uppercase w-full md:w-auto col-span-2 m-h-12`}>
             {passName}
           </h3>
           

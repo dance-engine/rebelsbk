@@ -26,8 +26,8 @@ const lato = Lato({
 });
 
 export const metadata: Metadata = {
-  title: "MLF 2024" + (process.env.NODE_ENV == 'development' ? " - DEV" : ""),
-  description: "Merseyside Latin Festival",
+  title: "Rebel SBK" + (process.env.NODE_ENV == 'development' ? " - DEV" : ""),
+  description: "Rebel SBK Evtns and Conventions - Andreas Salsa Rebel",
 };
 
 export default async function RootLayout({
