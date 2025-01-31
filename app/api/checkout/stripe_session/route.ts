@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
       attendee: JSON.stringify(attendee),
       preferences: JSON.stringify(preferences),
       group: JSON.stringify(group)
+      //! Adam TODO: Include 'parent_event': "EVENT#{slug-of-event}" (Please send as a string)
     },
     allow_promotion_codes: true,
     return_url:

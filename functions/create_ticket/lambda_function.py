@@ -130,6 +130,7 @@ def lambda_handler(event, context):
         'meal_preferences':event['meal_preferences'] if 'meal_preferences' in event else None,
         'promo_code':event['promo_code'] if 'promo_code' in event else None,
         'history':event['history'] if 'history' in event else [],
+        'parent_event':event['parent_event'],
     }
     update_ddb = table.put_item(Item=Item)
     logger.info(update_ddb)
@@ -139,7 +140,9 @@ def lambda_handler(event, context):
         recs = group['recommendations'] if 'recommendations' in group else None
         if group['id'] != "":
             add_group(ticket_number, email, event['full_name'], group['id'], time.time(), recs)
-    
+
+    is_prebook = True if "prebook" in event['line_items'][0]['description'].lower() else False
+
     if ('send_standard_ticket' in event):
         if event['send_standard_ticket']:
             # send the email with these details
@@ -153,7 +156,8 @@ def lambda_handler(event, context):
                         'email':event['email'], 
                         'ticket_number':ticket_number, 
                         'line_items':event['line_items'],
-                        'heading_message': event['heading_message'] if 'heading_message' in event else "THANK YOU FOR YOUR PURCHASE!"
+                        'parent_event': event['parent_event'],
+                        'is_prebook': is_prebook
                     }, cls=shared.DecimalEncoder),
                 )
             logger.info(response)
