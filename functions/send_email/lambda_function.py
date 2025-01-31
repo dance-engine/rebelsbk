@@ -24,6 +24,8 @@ import babel.numbers
 import os
 import json
 import logging
+from shared.parser import parse_event, validate_event, validate_line_items
+
 logger = logging.getLogger()
 logger.setLevel("INFO")
 logging.basicConfig()
@@ -139,35 +141,28 @@ def generate_standard_ticket_body(data):
     rows = ""
     total_amount = 0
     # generate table of items purchased
-    for i in data['line_items']:
+    for i,item in enumerate(data['line_items']):
         with open("./send_email/ticket_row.html", 'r') as line_item_row_file:
             line_item_tmpl = Template(line_item_row_file.read())
             rows = rows+"\n"+line_item_tmpl.substitute({
-                'tickettype':i['description'], 
-                'qty':1, 
-                'price':babel.numbers.format_currency(int(i['amount_total'])/100, "GBP", locale='en_UK')
+                'item_name':item['description'], 
+                'i':i+1, 
+                'event_name':data['parent_event']
+                # 'event_name':babel.numbers.format_currency(int(item['amount_total'])/100, "GBP", locale='en_UK')
             })
-            total_amount += int(i['amount_total'])
-    # create total row
-    with open("./send_email/ticket_row.html", 'r') as total_row_file:
-        total_tmpl = Template(total_row_file.read())
-        total_row = total_tmpl.substitute({
-            'tickettype':"", 
-            'qty':"<strong>Total</strong>", 
-            'price':"<strong>"+babel.numbers.format_currency(total_amount/100, "GBP", locale='en_UK')+"</strong>"
-        })
+            total_amount += int(item['amount_total'])
     
     with open("./send_email/ticket_body.html", "r") as body_file:
         body_tmpl = Template(body_file.read())
         subdomain = "www" if stage_name == "prod" else stage_name
         body = body_tmpl.substitute({
-            'fullname':data['name'], 
-            'email':data['email'], 
-            'ticketnumber':data['ticket_number'], 
-            'rows':rows, 
-            'ticket_link':"http://{}.merseysidelatinfestival.co.uk/preferences?email={}&ticket_number={}".format(subdomain,data['email'], data['ticket_number']), 
-            'total_row':total_row,
-            'heading_message':data['heading_message'],
+            'full_name':data['name'], 
+            'personal_info_1':data['email'], 
+            'amount_total':babel.numbers.format_currency(int(total_amount)/100, "GBP", locale='en_UK') if total_amount > 0 else "FREE",
+            'payment_method_type': "Prebooking only" if data['is_prebook'] else "",
+            'payment_method_2': "Save £2 on the door" if data['is_prebook'] else "",
+            'ticket_row':rows, 
+            'additional_message':"With this ticket you must pay the remaning balance on the door." if data['is_prebook'] else "",
         })   
     return body
 
@@ -221,15 +216,25 @@ def gen_ticket_qr(ticket_number):
 
 def lambda_handler(event, context):
     
-    logger.info(event)
+    try:
+        event = parse_event(event)
+        event = validate_event(event, ['email_type'])
 
+    except (ValueError, TypeError, KeyError) as e:
+        logger.error("Event validation failed: %s", str(e))
+        logger.error(event)
+        return {
+            'statusCode': 400,
+            'body': f'Invalid input: {str(e)}'
+        }
+    
     if event['email_type'] == "standard_ticket":
         #! check has the expected information in event
         qr_ticket = gen_ticket_qr(event['ticket_number'])
 
         logger.info("Generate the body of the email")
         body = generate_standard_ticket_body(event)
-        subject = 'Merseyside Latin Festival Ticket Confirmation'
+        subject = 'Rebel SBK Events Ticket Confirmation'
     elif event['email_type'] == "transfer_ticket":
         #! check has the expected information in event
         # generate as usual the ticket body
@@ -303,7 +308,10 @@ def lambda_handler(event, context):
     with open("./send_email/header_footer.html", "r") as header_footer_file:
         logger.info("Insert the body of the email into header and footer")
         header_footer_tmpl = Template(header_footer_file.read())
-        html_content = header_footer_tmpl.substitute({'body':body})
+        html_content = header_footer_tmpl.substitute({
+            'body':body,
+            'event_name':event.get('parent_event', "this event.")
+            })
 
     to_email = event['email']
     

@@ -7,17 +7,15 @@ from lambda_function import lambda_handler
 # boto3.setup_default_session(profile_name=profile_name)
 
 event = {
-    'email_type': 'transfer_ticket', 
-    'name': 'T Enzyme', 
-    'email': 'toaster_amylase0a@icloud.com', 
-    'ticket_number': '7227400839', 
-    'line_items': [
-        {'price_id': 'price_1PZcrKEWkmdeWsQPl1h22Dk4', 'amount_total': 9500, 'description': 'Saturday Pass', 'prod_id': 'prod_QQToHXWAJ7kCf4'}, 
-        {'price_id': 'price_1PZdHNEWkmdeWsQPMx12ez1O', 'amount_total': 1500, 'description': 'Sunday - Party', 'prod_id': 'prod_QQUFAgkOcEFm3I'}
-    ], 
-    'email_from': 'toaster_amylase0a@icloud.com', 
-    'full_name_from': 'C M', 
-    'heading_message': 'A TICKET HAS BEEN TRANSFERRED TO YOU!'
+    "email_type": "standard_ticket", 
+    "name": "T Enzyme", 
+    "email": "toaster_amylase0a@icloud.com", 
+    "ticket_number": "7227400839",
+    "line_items": [
+        {"price_id": 'price_1PZcrKEWkmdeWsQPl1h22Dk4', "amount_total": 0, "description": "February prebook", "prod_id": "prod_QQToHXWAJ7kCf4"}, 
+    ],
+    "parent_event": "Rebel SBK Noches February",
+    "is_prebook": True
 }
 
 lambda_handler(event, None)
