@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { useFormStatus } from "react-dom"
 import Cell from './Cell';
-import { initialSelectedOptions, fullPassName } from './pricingDefaults'
+import { fullPassName } from './pricingDefaults'
 import { calculateTotalCost, passOrTicket, getBestCombination, itemsFromPassCombination, itemListToOptions, addToOptions, pricingDataToOptions, pricingDataToPasses, pricingDataToTickets} from './pricingUtilities'
 // import type { PartialSelectedOptions } from './pricingTypes'
 import PassCards from './passes'
 // import { OptionsTable } from './OptionsTable';
 import { useRouter } from 'next/navigation'
-import { deepCopy, moneyString } from '../../lib/useful'
+import { moneyString } from '../../lib/useful'
 import symmetricDifference from 'set.prototype.symmetricdifference'
 import difference from 'set.prototype.difference'
 import useSWR from 'swr';
@@ -122,7 +122,7 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
     router.push("/checkout") //TODO This 100% needs a check for errors
   }
   
-  const cellClasses = 'border border-gray-600 text-center py-2 px-3 md:py-2 md:px-4 ';
+  // const cellClasses = 'border border-gray-600 text-center py-2 px-3 md:py-2 md:px-4 ';
   // const headerClasses = cellClasses.replaceAll('border-gray-600','border-chillired-400')
   // const toggleCellClasses = "bg-richblack-600 text-white " +  cellClasses 
   const studentDiscountAvailable = false
