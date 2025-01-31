@@ -13,7 +13,7 @@ import useSWR from 'swr';
 type fieldEntry = {name: string, label?: string, placeholder?: string, type?: string, value?: string | number, error?: string, width?: string  }
 
 export default function CheckoutClient() {
-  const {data: pricingData, error, isLoading, isValidating} = useSWR(`/api/pricing_table`, fetcher, { keepPreviousData: false });
+  const {data: pricingData, error, isLoading} = useSWR(`/api/pricing_table`, fetcher, { keepPreviousData: false });
   const [preferences, setPreferences] = useState(blankPreferences)
   const [selectedOptions, setSelectedOptions] = useState({} as any)
   const [passes,setPasses] = useState({})

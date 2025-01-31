@@ -1,4 +1,4 @@
-import { IndividualTickets, PartialSelectedOptions, Pass, Passes } from './pricingTypes'
+import { PartialSelectedOptions, Pass, Passes } from './pricingTypes'
 // import { individualTickets, passes, fullPassName} from './pricingDefaults'
 // import { individualTickets, passes, fullPassName} from './pricingDefaults'
 import power from 'power-set'
