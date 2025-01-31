@@ -4,6 +4,7 @@ import { fetcher } from  "@lib/fetchers";
 import { Fragment } from 'react';
 // import { metadata } from '@app/layout';
 import { priceIds } from '@components/ticketing/pricingUtilities';
+import { individualTickets, passes } from '@components/ticketing/pricingDefaultsDynamic';
 const toggleApiUrl = "/api/admin/stripe/webhooks"
 const productsApiUrl = "/api/admin/stripe/products"
 
@@ -17,7 +18,7 @@ const productsApiUrl = "/api/admin/stripe/products"
 //   setTimeout(() => mutate(toggleApiUrl), 300)
 // }
 
-const priceIdArray = Object.keys(priceIds()).map((key) => priceIds()[key] )
+const priceIdArray = [] //Object.keys(priceIds(false,passes,individualTickets)).map((key) => priceIds()[key] )
 
 export default function StripePageClient() {
   const {data: webhookData, error: webHookError, isLoading: webhookLoading, isValidating: webhookValidating} = useSWR(toggleApiUrl, fetcher, { keepPreviousData: false });
