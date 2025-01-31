@@ -23,34 +23,37 @@ export async function GET(request) {
   console.log("event slug:", eventSlug)
 
   // Construct the URLs dynamically
-  const individualItemsURL = eventSlug
-    ? `${process.env.LAMBDA_INDIVIDUAL_ITEMS}?event=${eventSlug}`
-    : `${process.env.LAMBDA_INDIVIDUAL_ITEMS}`;
+  // const individualItemsURL = eventSlug
+  //   ? `${process.env.LAMBDA_INDIVIDUAL_ITEMS}?event=${eventSlug}`
+  //   : `${process.env.LAMBDA_INDIVIDUAL_ITEMS}`;
 
-  const passesURL = eventSlug
-    ? `${process.env.LAMBDA_PASSES}?event=${eventSlug}`
-    : `${process.env.LAMBDA_PASSES}`;
+  // const passesURL = eventSlug
+  //   ? `${process.env.LAMBDA_PASSES}?event=${eventSlug}`
+  //   : `${process.env.LAMBDA_PASSES}`;
 
-  console.log(passesURL)
-  console.log(individualItemsURL)
+  // console.log(passesURL)
+  // console.log(individualItemsURL)
+
+  const eventsURL = [process.env.LAMBDA_EVENTS,eventSlug].join('?event=')
+  console.log("eventsURL",eventsURL)
 
   try {
-    // Fetch individual items
-    const individualItemsResponse = await fetch(individualItemsURL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    // // Fetch individual items
+    // const individualItemsResponse = await fetch(individualItemsURL, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // });
 
-    if (!individualItemsResponse.ok) {
-      throw new Error("Failed to fetch individual items.");
-    }
+    // if (!individualItemsResponse.ok) {
+    //   throw new Error("Failed to fetch individual items.");
+    // }
 
-    const individualItemsData = await individualItemsResponse.json();
+    // const individualItemsData = await individualItemsResponse.json();
 
-    // Fetch passes
-    const passesResponse = await fetch(passesURL, {
+    // Fetch events
+    const passesResponse = await fetch(eventsURL, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -64,10 +67,7 @@ export async function GET(request) {
     const passesData = await passesResponse.json();
 
     // Combine and return data
-    const response = {
-      individual_items: individualItemsData.items || [],
-      passes: passesData.passes || [],
-    };
+    const response = passesData;
 
     console.log(response)
     return Response.json(response, { status: 200 });

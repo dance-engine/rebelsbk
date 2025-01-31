@@ -15,7 +15,8 @@ export const guaranteeTimestampFromDate = (date: string | number) => {
 }
 
 export const moneyString = (amount: number) => {
-  const decimal_amount = amount % 1 != 0 ? amount.toFixed(2) : amount
+  const inPounds = amount / 100
+  const decimal_amount = inPounds % 1 != 0 ? inPounds.toFixed(2) : inPounds
   // const decimal_amount = (Math.round(amount * 100) / 100).toFixed(2)
   return amount <= 0 ? "FREE" : `£${decimal_amount}`
 }

@@ -1,12 +1,15 @@
 // import { CheckIcon } from '@heroicons/react/20/solid'
-import { fullPassName, passes} from './pricingDefaults'
+import { fullPassName } from './pricingDefaults'
 import { PassCard } from './PassCard';
 import { itemsFromPassCombination, itemListToOptions, addToOptions, passInCombination, optionsToPassArray} from './pricingUtilities'
-import type { PartialSelectedOptions } from './pricingTypes'
+// import type { PartialSelectedOptions } from './pricingTypes'
+import type { Passes, Ticket } from './pricingTypes'
 
 // export default function PassCards({setDayPass,setTypePass,setDinnerPass,priceModel,scrollToElement,selectFullPass,selected,shouldScroll}) {
-export default function PassCards({currentSelectedOptions, setSelectedOptions, priceModel,scrollToElement,selected,shouldScroll, basic, locked, withHero = true} :
-  { currentSelectedOptions:PartialSelectedOptions, 
+export default function PassCards({passes, individualTickets, currentSelectedOptions, setSelectedOptions, priceModel,scrollToElement,selected,shouldScroll, basic, locked, withHero = true} :
+  { passes: Passes,
+    individualTickets: Ticket[],
+    currentSelectedOptions:any, 
     setSelectedOptions:any, 
     priceModel: string,
     scrollToElement:any,
@@ -19,9 +22,12 @@ export default function PassCards({currentSelectedOptions, setSelectedOptions, p
 ) {
 
   const clickFunctionFromPassName = (passName:string,setTo:boolean) => {
+    console.log("Clicked",passName,setTo)
     let initialOptions = currentSelectedOptions
-    const itemsInPassName = itemsFromPassCombination([passName]) as string[]
-    setSelectedOptions(addToOptions(initialOptions,itemListToOptions(itemsInPassName,setTo)))
+    const itemsInPassName = itemsFromPassCombination([passName],passes) as string[]
+    console.log("itemsInPassName",itemsInPassName,"initialOptions",initialOptions)
+    console.log("itemListToOptions(itemsInPassName,setTo,individualTickets)",itemListToOptions(itemsInPassName,setTo,individualTickets))
+    setSelectedOptions(addToOptions(initialOptions,itemListToOptions(itemsInPassName,setTo,individualTickets)))
     shouldScroll && scrollToElement()
   }  
   const passesAvailable = Object.keys(passes).filter((item) => passes[item].isAvailable)

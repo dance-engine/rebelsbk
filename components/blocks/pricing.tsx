@@ -15,6 +15,7 @@ export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
   const [setFullPassSelectFunction] = useState(() => (setTo)=>{console.log("fullPassSelectFunction not set",setTo)})
   const packagesSuggestorRef = useRef(null);
   const scrollToElement = () => {
+    return false
     if (packagesSuggestorRef.current) {
       setTimeout(() => {
         const bottom = packagesSuggestorRef.current.getBoundingClientRect().bottom

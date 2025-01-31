@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from "react";
-import { moneyString } from '@lib/useful'
+import { moneyString } from '../../lib/useful'
 import {getBestCombination,priceIds } from "@components/ticketing/pricingUtilities"
 import MealPreferences, { blankPreferences } from "@components/preferences/MealPreferences"
 import {Container} from "@components/layout/container"

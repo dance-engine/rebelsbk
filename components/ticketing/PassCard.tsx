@@ -1,6 +1,6 @@
 import React from 'react';
 import { fullPassName } from './pricingDefaults';
-import { moneyString } from '@lib/useful'
+import { moneyString } from '../../lib/useful'
 
 export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving, selected, included, basic, locked, hero= false}:
   {passName:string, clickFunction:any, pass:any, priceModel:string, hasASaving:boolean, selected:boolean, included?:boolean, basic?:boolean, locked?:boolean, hero?:boolean}
@@ -25,7 +25,7 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
         <div className='col-span-2'>
           
           <h3 id={passName} className={`${baseTextSize} leading-7 text-[#EA4891] font-black uppercase w-full md:w-auto col-span-2 m-h-12`}>
-            {passName}
+            {pass.name}
           </h3>
           
           {basic ? null : <p className="mt-2 text-sm md:text-base leading-7 col-span-3 text-white">
