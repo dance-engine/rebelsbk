@@ -132,6 +132,8 @@ def lambda_handler(event, context):
         student_ticket = True if stripe_response['line_items']['data'][0]['price']['nickname' ] == "student_active" else False
         meal = json.loads(stripe_response['metadata']['preferences']) if 'preferences' in stripe_response['metadata'] else None
 
+        parent_event = stripe_response['metadata']['parent_event']
+
         # customer information to keep
         ateendee_details = json.loads(stripe_response['metadata']['attendee'])
         full_name = ateendee_details['name']
@@ -153,6 +155,7 @@ def lambda_handler(event, context):
                 'schedule': None,
                 'heading_message':"THANK YOU FOR YOUR PURCHASE!",
                 'send_standard_ticket': True,
+                'parent_event': parent_event
                 }
         
         if 'group' in stripe_response['metadata']:
