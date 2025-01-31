@@ -119,6 +119,8 @@ def lambda_handler(event, context):
 
     attendees_table.put_item(Item=item)
 
+    is_prebook = True if "prebook" in line_items[0]['description'].lower() else False
+
     try:
         if event.get('send_standard_ticket', True):
             # send the email with these details
@@ -132,7 +134,8 @@ def lambda_handler(event, context):
                         'email':email, 
                         'ticket_number':ticket_number, 
                         'line_items':line_items,
-                        'heading_message': event['heading_message'] if 'heading_message' in event else "THANK YOU FOR YOUR PURCHASE!"
+                        'parent_event': parent_event,
+                        'is_prebook': is_prebook
                     }, cls=DecimalEncoder),
                 )
             logger.info(response)
