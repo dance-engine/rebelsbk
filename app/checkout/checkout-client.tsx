@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from "react";
 import { moneyString } from '../../lib/useful'
-import {getBestCombination,priceIds, pricingDataToOptions, pricingDataToPasses, pricingDataToTickets } from "@components/ticketing/pricingUtilities"
+import {getBestCombination,priceIds, pricingDataToPasses, pricingDataToTickets } from "@components/ticketing/pricingUtilities"
 import MealPreferences, { blankPreferences } from "@components/preferences/MealPreferences"
 import {Container} from "@components/layout/container"
 import {Icon} from "@components/icon"

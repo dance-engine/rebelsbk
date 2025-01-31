@@ -4,7 +4,7 @@ import { useFormStatus } from "react-dom"
 import Cell from './Cell';
 import { initialSelectedOptions, fullPassName } from './pricingDefaults'
 import { calculateTotalCost, passOrTicket, getBestCombination, itemsFromPassCombination, itemListToOptions, addToOptions, pricingDataToOptions, pricingDataToPasses, pricingDataToTickets} from './pricingUtilities'
-import type { PartialSelectedOptions } from './pricingTypes'
+// import type { PartialSelectedOptions } from './pricingTypes'
 import PassCards from './passes'
 // import { OptionsTable } from './OptionsTable';
 import { useRouter } from 'next/navigation'
