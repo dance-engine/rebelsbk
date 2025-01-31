@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body) //! Adam TODO: Make sure body includes 'parent_event': "EVENT#{slug-of-event}"
   })
   if(!checkoutResponse.ok) {
     const checkoutData = await checkoutResponse.json()
