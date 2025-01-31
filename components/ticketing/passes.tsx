@@ -66,7 +66,7 @@ export default function PassCards({passes, individualTickets, currentSelectedOpt
           const clickFunction = () => clickFunctionFromPassName(passName,!selected.includes(passName))
           return (<PassCard key={passName} 
             basic={basic} passName={passName} pass={pass}
-            clickFunction={clickFunction}  priceModel={priceModel} hasASaving={hasSaving} 
+            clickFunction={clickFunction} priceModel={priceModel} hasASaving={hasSaving} 
             selected={selected.includes(passName)}
             included={included}
             locked={locked}

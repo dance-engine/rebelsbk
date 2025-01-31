@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useFormStatus } from "react-dom"
 import Cell from './Cell';
 import { initialSelectedOptions, fullPassName } from './pricingDefaults'
-import { calculateTotalCost, passOrTicket, getBestCombination, itemsFromPassCombination, itemListToOptions, addToOptions } from './pricingUtilities'
+import { calculateTotalCost, passOrTicket, getBestCombination, itemsFromPassCombination, itemListToOptions, addToOptions, pricingDataToOptions, pricingDataToPasses, pricingDataToTickets} from './pricingUtilities'
 import type { PartialSelectedOptions } from './pricingTypes'
 import PassCards from './passes'
-import { OptionsTable } from './OptionsTable';
+// import { OptionsTable } from './OptionsTable';
 import { useRouter } from 'next/navigation'
 import { deepCopy, moneyString } from '../../lib/useful'
 import symmetricDifference from 'set.prototype.symmetricdifference'
@@ -68,9 +68,9 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
   }
 
   useEffect(() => {
-    setTotalCost(calculateTotalCost(selectedOptions,priceModel))
+    setTotalCost(calculateTotalCost(selectedOptions,priceModel,individualTickets))
     selectPassCombination(individualTickets,passes)
-  }, [selectedOptions,priceModel,fullPassFunction])
+  }, [selectedOptions,priceModel,fullPassFunction,individualTickets])
   
   useEffect(() => {
     if(fullPassFunction) { fullPassFunction(() => selectFullPass) }
@@ -80,49 +80,16 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
     console.log("pricingData",pricingData)
     
     // Generate item options
-    const optionsGenerated = pricingData ? pricingData.reduce((obj,event) => {
-      let eventObj = {}
-      eventObj[event.SK] = event.individual_items.reduce((obj,item) => {
-        let itemObj = {}
-        itemObj[item.SK] = false
-        return {...obj, ...itemObj}  
-      },{})
-      return {...obj, ...eventObj}
-    },{}) : []
+    const optionsGenerated = pricingDataToOptions(pricingData)
     console.log("optionsGenerated",optionsGenerated)
     setSelectedOptions(optionsGenerated)
 
     // Generate Passes
-    const passesGenerated = pricingData ? pricingData.reduce((obj,event) => {
-      event.passes.reduce((obj,pass) => {
-        obj[pass.SK] = {
-          name: pass.name,
-          cost: pass.current_price,
-          studentCost: 0,
-          isAvailable: pass.active > 0 ? true : false,
-          saving: 2,
-          studentSaving: 2,
-          combination: pass.associated_items.map(item => `${event.SK} ${item.item}`),
-          description: pass.description,
-          priceId: 'price_1QQneIEWkmdeWsQPJhsLrRof',
-          studentPriceId: 'price_1QQnjjEWkmdeWsQPgurnBDwI'
-        }
-        return obj
-      },obj)
-      return obj
-    },{}): {}
+    const passesGenerated = pricingDataToPasses(pricingData)
     console.log("passesGenerated",passesGenerated)
     setPasses(passesGenerated)
 
-    const generatedIndividualTicket = pricingData ? pricingData.reduce((obj,event) => {
-      let eventObj = {}
-      eventObj[event.SK] = event.individual_items.reduce((obj,item) => {
-        let itemObj = {}
-        itemObj[item.SK] = item
-        return {...obj, ...itemObj}  
-      },{})
-      return {...obj, ...eventObj}
-    },{}) : []
+    const generatedIndividualTicket = pricingDataToTickets(pricingData)
     console.log("generatedIndividualTicket",generatedIndividualTicket)
     setIndividualTickets(generatedIndividualTicket)
 
@@ -202,18 +169,18 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
             <div className='rounded-t-md border-t-gray-600 border border-b-0 border-l-0 border-r-0 bg-gold-500 p-2 font-bold text-center'>This is a student only ticket deal!</div>) 
           : null }
           <div className='flex flex-col md:flex-row justify-between  p-10 gap-12'>
-            { totalCost && totalCost > 0 ? (
+            { packages && packages.length > 0 ? (
               <>
                 <div className='max-w-2/3'>
                   
                   <p>{packages.length == 1 && packages[0] == fullPassName ?  "Best deal" : "Best option for you"}</p>
-                  <h2 className='text-2xl'>{packages.map((packageName) => `${packageName} ${passOrTicket(packageName)}`).join(', ').replace('Saturday Dinner Ticket','Dinner Ticket')}</h2>
+                  <h2 className='text-2xl'>{packages.map((packageName) => `${passes[packageName].name} ${passOrTicket(packageName,passes)}`).join(', ').replace('Saturday Dinner Ticket','Dinner Ticket')}</h2>
                   <h2 className='text-3xl font-bold'>
                     { totalCost - packageCost > 0 ? (<span className='line-through'>£{totalCost % 1 != 0 ? totalCost.toFixed(2) : totalCost}</span>) : null } {moneyString(packageCost)}
                   </h2>
                   { totalCost - packageCost > 0 ? (<p>Saving you £{(totalCost - packageCost) % 1 !=0 ?  (totalCost - packageCost).toFixed(2) : (totalCost - packageCost)} on the full cost of those options!</p>) : null }
   
-                  <div className='font-bold mt-3'>Add promo codes at checkout</div>
+                  {/* <div className='font-bold mt-3'>Add promo codes at checkout</div> */}
                 </div>
                 <form action={checkout} className='flex w-full md:w-auto flex-col md:flex-row items-center justify-center'>
                 <CheckoutButton></CheckoutButton>
