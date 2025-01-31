@@ -3,8 +3,8 @@ import useSWR, {mutate} from 'swr';
 import { fetcher } from  "@lib/fetchers";
 import { Fragment } from 'react';
 // import { metadata } from '@app/layout';
-import { priceIds } from '@components/ticketing/pricingUtilities';
-import { individualTickets, passes } from '@components/ticketing/pricingDefaultsDynamic';
+// import { priceIds } from '@components/ticketing/pricingUtilities';
+// import { individualTickets, passes } from '@components/ticketing/pricingDefaultsDynamic';
 const toggleApiUrl = "/api/admin/stripe/webhooks"
 const productsApiUrl = "/api/admin/stripe/products"
 
