@@ -3,7 +3,7 @@ import Layout from "@components/layout/layout";
 import { Container } from "@components/layout/container";
 import Navigation from "@components/admin/navigation";
 // import { currentUser } from "@clerk/nextjs/server";
-import Till from "@components/admin/till";
+// import Till from "@components/admin/till";
 
 const pages = [
   { name: 'Admin', href: '/admin', current: true },
@@ -22,7 +22,8 @@ export default async function AdminUserPage() {
         <Navigation pages={pages} />
       </Container>        
       <Container width="large" padding="tight" className={`flex-1 pb-2`} size="none">
-        <Till/>
+        Missing
+        {/* <Till/> */}
       </Container>
     </section>
   </Layout>
