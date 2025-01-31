@@ -51,16 +51,17 @@ def create_passes(data):
             current_time = int(time.time())
             pass_item = {
                 "PK": f"EVENT#{parent_event}",
-                "SK": f"PASS#{slug}",
+                "SK": f"EVENT#{parent_event}#PASS#{slug}",
                 "slug": slug,
                 "name": pass_data["name"],
                 "description": pass_data.get("description", ""),
                 "current_price": pass_data.get("current_price"),
-                "type": "pass",
                 "active": pass_data.get("current_price", False) and pass_data.get("active", False),
                 "tags": pass_data.get("tags", []),
                 "created_at": current_time,
                 "updated_at": current_time,
+                "type": "pass",
+                "organisation":     "rebel-sbk-events",
             }
 
             # Write the pass to DynamoDB
@@ -75,10 +76,11 @@ def create_passes(data):
             for item in associated_items:
                 pass_item_mapping = {
                     "PK": f"EVENT#{parent_event}",
-                    "SK": f"PASS#{slug}#ITEM#{item}",
-                    "pass": f"PASS#{slug}",
-                    "item": f"ITEM#{item}",
+                    "SK": f"EVENT#{parent_event}#PASS#{slug}#ITEM#{item}",
+                    "pass": f"EVENT#{parent_event}#PASS#{slug}",
+                    "item": f"EVENT#{parent_event}#ITEM#{item}",
                     "type": "pass-item",
+                    "organisation": "rebel-sbk-events",
                 }
                 table.put_item(
                     Item=pass_item_mapping,
@@ -106,7 +108,7 @@ def get_passes(event_slug=None):
         if event_slug:
             # Query passes for a specific event
             response = table.query(
-                KeyConditionExpression=Key("PK").eq(f"EVENT#{event_slug}") & Key("SK").begins_with("PASS#")
+                KeyConditionExpression=Key("PK").eq(f"EVENT#{event_slug}") & Key("SK").begins_with(f"EVENT#{event_slug}#PASS#")
             )
         else:
             # Query all passes across all events using the type index
