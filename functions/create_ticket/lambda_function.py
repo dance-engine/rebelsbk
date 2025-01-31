@@ -130,6 +130,7 @@ def lambda_handler(event, context):
         'meal_preferences':event['meal_preferences'] if 'meal_preferences' in event else None,
         'promo_code':event['promo_code'] if 'promo_code' in event else None,
         'history':event['history'] if 'history' in event else [],
+        'parent_event':event['parent_event'],
     }
     update_ddb = table.put_item(Item=Item)
     logger.info(update_ddb)
