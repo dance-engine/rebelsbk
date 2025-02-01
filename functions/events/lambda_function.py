@@ -51,12 +51,13 @@ def create_event(event_data):
         event_item = {
             "PK":   f"EVENT#{slug_of_event}",
             "SK":   f"EVENT#{slug_of_event}",
-            "slug": f"{slug_of_event}",
-            "name": event_name,
+            "slug":             f"{slug_of_event}",
+            "name":             event_name,
             "start_time":       event_data.get("start_time"),
             "end_time":         event_data.get("end_time"),
             "category":         event_data.get("category"),        
             "total_capacity":   event_data.get("total_capacity"),
+            "number_sold":      0,
             "created_at":       current_time,
             "description":      event_data.get("description"),
             "type":             "setting",
@@ -68,13 +69,13 @@ def create_event(event_data):
         location_item = {
             "PK": f"EVENT#{slug_of_event}",
             "SK": f"EVENT#{slug_of_event}#LOCATION#{slug_of_venue}",
-            "slug": f"{slug_of_venue}",
-            "venue":    event_data["location"].get("venue"),
-            "address":  event_data["location"].get("address"),
-            "city":     event_data["location"].get("city"),
-            "country":  event_data["location"].get("country"),
+            "slug":         f"{slug_of_venue}",
+            "venue":        event_data["location"].get("venue"),
+            "address":      event_data["location"].get("address"),
+            "city":         event_data["location"].get("city"),
+            "country":      event_data["location"].get("country"),
             "organisation": "rebel-sbk-events",
-            "type": "location"
+            "type":         "location"
         }
 
         # If longitude and latitude included then add that data too

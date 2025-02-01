@@ -92,6 +92,27 @@ def lambda_handler(event, context):
     checkout_session = event.get('checkout_session', 'unknown')
     parent_event = event.get('event')
 
+    parent_event_data = event_table.get_item(Key={'PK':parent_event, 'SK':parent_event}).get('Item')
+    
+    if not parent_event_data:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({
+                'message': "Event not found"
+            })
+        }
+    
+    total_capacity = parent_event_data.get('total_capacity', None)
+    tickets_sold = parent_event_data.get('number_sold', 0)
+
+    if total_capacity is not None and tickets_sold >= total_capacity:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({
+                'message': "Event is at full capacity."
+            })
+        }
+    
     logger.info("Getting ticket number")
     ticket_number = get_ticket_number(email, student_ticket)
 
@@ -108,7 +129,7 @@ def lambda_handler(event, context):
         'status': status,
         'student_ticket': student_ticket,
         'checkout_session': checkout_session,
-        'parent_event': parent_event
+        'parent_event': parent_event,
     }
 
     optional = ['schedule', 'meal_preferences', 'promo_code', 'history']
@@ -135,13 +156,21 @@ def lambda_handler(event, context):
                         'ticket_number':ticket_number, 
                         'line_items':line_items,
                         'parent_event': parent_event,
-                        'is_prebook': is_prebook
+                        'is_prebook': is_prebook,
+                        'parent_event_name':parent_event_data['name']
                     }, cls=DecimalEncoder),
                 )
             logger.info(response)
     except boto3.exceptions.Boto3Error as e:
         logger.error("Failed to invoke send_email lambda: %s", str(e))
-        record_fail(event, f"Failed to send confirmation email: {str(e)}")            
+        record_fail(event, f"Failed to send confirmation email: {str(e)}")   
+
+    event_table.update_item(
+        Key={'PK':parent_event, 'SK':parent_event},
+        UpdateExpression="SET number_sold = number_sold + :inc",
+        ExpressionAttributeValues={':inc': 1},
+        ConditionExpression="number_sold < total_capacity"
+    )                 
 
     return {
         'statusCode': 200,
@@ -150,4 +179,4 @@ def lambda_handler(event, context):
             'ticket_number': ticket_number,
             'email': email
         })
-    }                
+    }

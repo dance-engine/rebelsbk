@@ -23,6 +23,7 @@ logger.setLevel("INFO")
 # get dynamodb table
 db = boto3.resource('dynamodb')
 table = db.Table(os.environ.get("ATTENDEES_TABLE_NAME"))
+event_table = db.Table(os.environ.get("EVENT_TABLE_NAME"))
 
 lambda_client = boto3.client('lambda')
 
@@ -110,6 +111,27 @@ def lambda_handler(event, context):
     
     logger.info("Getting ticket number")
     ticket_number = get_ticket_number(email, event['student_ticket'])
+
+    parent_event_data = event_table.get_item(Key={'PK':event['parent_event'], 'SK':event['parent_event']}).get('Item')
+
+    if not parent_event_data:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({
+                'message': "Event not found"
+            })
+        }
+    
+    total_capacity = parent_event_data.get('total_capacity', None)
+    tickets_sold = parent_event_data.get('number_sold', 0)
+
+    if total_capacity is not None and tickets_sold >= total_capacity:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({
+                'message': "Event is at full capacity."
+            })
+        }    
 
     # put the information into dynamodb table
     logger.info("Putting ticket into DynamoDB")
