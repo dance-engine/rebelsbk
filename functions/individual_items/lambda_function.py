@@ -62,6 +62,7 @@ def create_individual_items(data):
                 "updated_at": current_time,
                 "type": "individual-item",
                 "organisation": "rebel-sbk-events",
+                "price_id": item.get("price_id", None)
             }
 
             # Write the item to DynamoDB

@@ -62,6 +62,8 @@ def create_passes(data):
                 "updated_at": current_time,
                 "type": "pass",
                 "organisation":     "rebel-sbk-events",
+                "price_id": pass_data.get("price_id", None),
+                "saving": pass_data.get("saving", 0)
             }
 
             # Write the pass to DynamoDB
