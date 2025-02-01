@@ -49,15 +49,15 @@ def send_email_sendgrid(from_email, to_email, subject, html_content, qr_ticket=N
     )
     
     logger.info("Adding qr_ticket if any exist")
-    if qr_ticket is not None:
-        attachment = Attachment(
-            FileContent(qr_ticket),
-            FileName('qrticket.jpg'),
-            FileType('image/jpeg'),
-            Disposition('inline'),
-            ContentId('qr-ticket')
-        )
-        message.add_attachment(attachment)
+    # if qr_ticket is not None:
+    #     attachment = Attachment(
+    #         FileContent(qr_ticket),
+    #         FileName('qrticket.jpg'),
+    #         FileType('image/jpeg'),
+    #         Disposition('inline'),
+    #         ContentId('qr-ticket')
+    #     )
+    #     message.add_attachment(attachment)
 
     logger.info("Attempting to send email via SendGrid")
     try:
