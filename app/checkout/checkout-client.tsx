@@ -9,6 +9,7 @@ import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import StripeForm from "./stripe"
 import { fetcher } from '../../lib/fetchers'
 import useSWR from 'swr';
+import { getUnixTime } from 'date-fns'
 
 type fieldEntry = {name: string, label?: string, placeholder?: string, type?: string, value?: string | number, error?: string, width?: string  }
 
@@ -49,7 +50,7 @@ export default function CheckoutClient() {
   useEffect(() => {
     const calculatedBestCombo = getBestCombination(selectedOptions,student ? 'studentCost':'cost',individualTickets, passes)
     setBestCombo(calculatedBestCombo)
-    console.log("Best Combo - ",bestCombo,selectedOptions)
+    console.log("Best Combo -","\nbestCombo",bestCombo,"\nselectedOptions",selectedOptions)
   },[selectedOptions,student])
 
   useEffect(() => {
@@ -60,9 +61,9 @@ export default function CheckoutClient() {
     setStripeProducts(selectedPassPriceIds)
   },[bestCombo,student])
 
-  const freeCheckout = (action) => {
-    alert(JSON.stringify([action,userData,preferences,stripeProducts]))
-  }
+  // const freeCheckout = (action) => {
+  //   alert(JSON.stringify([action,userData,preferences,stripeProducts]))
+  // }
 
   useEffect(() => {
     // Generate Passes
@@ -75,6 +76,61 @@ export default function CheckoutClient() {
     setIndividualTickets(generatedIndividualTicket)
 
   },[pricingData])
+
+  async function freeCheckout() {
+    
+    // Generate line items for each pass/ticket
+    // const line_items = packages.map(passName => {
+    //   const line_item = passes[passName] ? passes[passName] : individualTickets[passName.split(" ")[0]][passName.split(" ")[1]]
+    //   if (line_item) {
+    //     return {
+    //       'amount_total': formObject.get("inperson-amount"),  //studentDiscount ? line_item.cost * 100 : line_item.studentCost * 100,
+    //       'description': passName,
+    //       'price_id': studentDiscount ? line_item.studentPriceId : line_item.priceId,
+    //     }
+    //   } else {
+    //     return { 'amount_total': 0, 'description': passName, 'price_id': "broken", }
+    //   }
+    // })
+    // Record the sale
+    console.log("selectedOptions",selectedOptions)
+    const purchaseObj = {
+      'email': userData.email,       
+      'full_name': userData.name,
+      'purchase_date': getUnixTime(new Date()) ,
+      'line_items': [],
+      'access': [], //! use selectedAccessArray instead
+      'status': "prebook",
+      'student_ticket': false,
+    //   // 'promo_code': None|{
+    //   //     'code': "MLF",
+    //   //     'value': 500
+    //   // },
+    //  // 'meal_preferences': None|{},
+      'checkout_session': "none", 
+      'checkout_amount': bestCombo.price, 
+      'heading_message':"THANK YOU FOR YOUR PURCHASE",
+      'send_standard_ticket': true,
+    }
+    console.log("Purchase object",purchaseObj)
+    // const apiResponse = await fetch('/api/admin/epos', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(purchaseObj),
+    // })
+    // const apiData = await apiResponse.json() 
+    // const apiAmmendedData = apiResponse.ok ? apiData : {...apiData, ticket_number: false }
+    // console.log("apiData",apiAmmendedData)
+    // setTicket(apiData.ticket_number)
+    // if(!apiResponse.ok) {
+    //   alert(`PROBLEM, ${JSON.stringify(apiData)} ${apiResponse.status}`)
+    // }
+    // router.push("/admin/epos") //TODO This 100% needs a check for errors
+    // Should reset the thing and unlock the form
+    // setLocked(false)
+  }
 
 
   const dinnerInfoRequired = selectedOptions && selectedOptions['Saturday'] && selectedOptions['Saturday']['Dinner']
@@ -99,7 +155,8 @@ export default function CheckoutClient() {
             <Icon data={{name: "BiCart", color: "purple", style: "circle", size: "medium"}} className="mr-2 border border-richblack-700"></Icon>
             {student ? "Student " : null}Passes selected
           </h2>
-          {bestCombo.options.join(', ')} : {moneyString(bestCombo.price)}
+          {JSON.stringify(bestCombo,null,2)}
+          {bestCombo.options.map((index)=>{ return passes[index]?.name}).join(', ') } - {moneyString(bestCombo.price)}
         </Container>
 
         <Container size="small" width="medium" className=" text-white w-full rounded-3xl border border-richblack-700 bg-richblack-500 py-6 transition-all	">
@@ -208,9 +265,10 @@ export default function CheckoutClient() {
         <h2>Debug Ignore below the line</h2>
         <div className=' text-white text-xs'>
           <pre>{JSON.stringify(selectedOptions,null,2)}</pre>
-          <pre>{JSON.stringify(stripeProducts,null,2)}</pre>
-          <pre>userData -- {JSON.stringify(userData,null,2)}</pre>
-          <pre>Info for Stripe -- {dinnerInfoProvided ? "true" : "false"} {userData.email} {stripeReady ? "true" : "false"} {JSON.stringify(steps)} </pre>
+          <pre>{JSON.stringify(bestCombo,null,2)}</pre>
+          {/* <pre>{JSON.stringify(stripeProducts,null,2)}</pre> */}
+          {/* <pre>userData -- {JSON.stringify(userData,null,2)}</pre>
+          <pre>Info for Stripe -- {dinnerInfoProvided ? "true" : "false"} {userData.email} {stripeReady ? "true" : "false"} {JSON.stringify(steps)} </pre> */}
         </div>
         </> : null }
       </div>

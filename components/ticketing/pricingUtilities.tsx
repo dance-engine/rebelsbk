@@ -3,16 +3,16 @@ import { PartialSelectedOptions, Pass, Passes } from './pricingTypes'
 // import { individualTickets, passes, fullPassName} from './pricingDefaults'
 import power from 'power-set'
 import isubsetof from 'set.prototype.issubsetof'
-import { individualTickets } from './pricingDefaultsDynamic';
+// import { individualTickets } from './pricingDefaultsDynamic';
 isubsetof.shim();
 
 // Returns a list of all pass combinations you could buy
 const generateAllPassCombinations = (passes,fullPassName = 'None') => {
-  console.log("generateAllPassCombinations")
-  console.log("passes",passes)
+  // console.log("generateAllPassCombinations")
+  // console.log("passes",passes)
   const passTitles = Object.keys(passes).filter((item) => { return item != fullPassName && passes[item].isAvailable })
   const passCombinations = power(passTitles)
-  console.log(passCombinations)
+  // console.log(passCombinations)
   // passCombinations.forEach((passCombination: any[]) => {
   //   const packagePrice = priceForPassCombination(passCombination,priceModel)
   //   const tickePrice = priceForIndividualItems(itemsNotCovered(optionsToPassArray(selectedOptions),itemsFromPassCombination(passCombination)))
@@ -71,18 +71,18 @@ const isAllDayOptions = (options: PartialSelectedOptions,day:string,individualTi
   const allSelections = new Set(availableOptionsForDay(day,individualTickets))
   return daySelection.symmetricDifference(allSelections).size == 0
 }
-const availableDaysForOption = (option: string) => {
-  return Object.keys(individualTickets).map((day) => {
-    const options = availableOptionsForDay(day,individualTickets)
-    return options.includes(option) ? day : null
-  }).filter(Boolean)
-}
-const isAllPassOptions = (options: PartialSelectedOptions,passType:string) => {
-  const relevantDays = availableDaysForOption(passType)
-  return relevantDays.map((day) => {
-    return options[day][passType]
-  }).every(Boolean)
-}
+// const availableDaysForOption = (option: string) => {
+//   return Object.keys(individualTickets).map((day) => {
+//     const options = availableOptionsForDay(day,individualTickets)
+//     return options.includes(option) ? day : null
+//   }).filter(Boolean)
+// }
+// const isAllPassOptions = (options: PartialSelectedOptions,passType:string) => {
+//   const relevantDays = availableDaysForOption(passType)
+//   return relevantDays.map((day) => {
+//     return options[day][passType]
+//   }).every(Boolean)
+// }
 const priceForPassCombination = (passCombination,priceModel,passes) => {
   const price = passCombination.reduce((price ,passTitle) => {
     console.log("priceForPassCombination")
@@ -139,11 +139,11 @@ const itemsNotCovered = (optionsRequested,optionsCovered) => {
   return Array.from(requested.difference(covered).values())
 }
 const getBestCombination = (options,priceModel, individualTickets: any[],passes: Passes) => {
-  console.log("BEST COMBO!!!!!")
-  console.log(options)
-  console.log(priceModel)
-  console.log(individualTickets)
-  console.log(passes)
+  // console.log("BEST COMBO!!!!!")
+  // console.log(options)
+  // console.log(priceModel)
+  // console.log(individualTickets)
+  // console.log(passes)
   // console.log("")
   if(optionsToPassArray(options).length == 0) {
     return {price: 0, options: []}
@@ -155,11 +155,11 @@ const getBestCombination = (options,priceModel, individualTickets: any[],passes:
   passCombinations.forEach((passCombination: any[]) => {
     // console.log("passCombination,priceModel",passCombination,priceModel)
     const packagePrice = priceForPassCombination(passCombination,priceModel,passes)
-    console.log(" - packagePrice", packagePrice)
+    // console.log(" - packagePrice", packagePrice)
     const tickePrice = priceForIndividualItems(itemsNotCovered(optionsToPassArray(options),itemsFromPassCombination(passCombination,passes)),individualTickets)
-    console.log(" - tickePrice", tickePrice)
+    // console.log(" - tickePrice", tickePrice)
     const combinedPrice = packagePrice + tickePrice
-    console.log(" - combinedPrice", combinedPrice)
+    // console.log(" - combinedPrice", combinedPrice)
     if(combinedPrice <= bestPrice) {
       bestPrice = combinedPrice
       bestOptions = [...passCombination, ...itemsNotCovered(optionsToPassArray(options),itemsFromPassCombination(passCombination,passes))]
@@ -266,7 +266,7 @@ export {
   optionsToPassArray, 
   availableOptionsForDay, 
   isAllDayOptions, 
-  isAllPassOptions, 
+  // isAllPassOptions, 
   priceForPassCombination, 
   itemsFromPassCombination, 
   priceForIndividualItems, 
