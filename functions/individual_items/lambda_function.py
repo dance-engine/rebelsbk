@@ -56,7 +56,7 @@ def create_individual_items(data):
                 "name": item["name"],
                 "description": item.get("description", ""),
                 "current_price": item.get("current_price"),
-                "active": item.get("current_price", False) and item.get("active", False),
+                "active": item.get("active", False),
                 "tags": item.get("tags", []),
                 "created_at": current_time,
                 "updated_at": current_time,
