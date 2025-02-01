@@ -77,21 +77,24 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
   },[])
 
   useEffect(() => {
-    console.log("pricingData",pricingData)
-    
-    // Generate item options
-    const optionsGenerated = pricingDataToOptions(pricingData)
-    console.log("optionsGenerated",optionsGenerated)
-    setSelectedOptions(optionsGenerated)
+    if(pricingData && !pricingData.message) {
 
-    // Generate Passes
-    const passesGenerated = pricingDataToPasses(pricingData)
-    console.log("passesGenerated",passesGenerated)
-    setPasses(passesGenerated)
+      console.log("pricingData",pricingData)
+      
+      // Generate item options
+      const optionsGenerated = pricingDataToOptions(pricingData)
+      console.log("optionsGenerated",optionsGenerated)
+      setSelectedOptions(optionsGenerated)
 
-    const generatedIndividualTicket = pricingDataToTickets(pricingData)
-    console.log("generatedIndividualTicket",generatedIndividualTicket)
-    setIndividualTickets(generatedIndividualTicket)
+      // Generate Passes
+      const passesGenerated = pricingDataToPasses(pricingData)
+      console.log("passesGenerated",passesGenerated)
+      setPasses(passesGenerated)
+
+      const generatedIndividualTicket = pricingDataToTickets(pricingData)
+      console.log("generatedIndividualTicket",generatedIndividualTicket)
+      setIndividualTickets(generatedIndividualTicket)
+    }
 
   },[pricingData])
 

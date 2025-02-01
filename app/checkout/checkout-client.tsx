@@ -1,4 +1,5 @@
 'use client'
+import { useRouter} from 'next/navigation'
 import { useEffect, useState } from "react";
 import { moneyString } from '../../lib/useful'
 import {getBestCombination,priceIds, pricingDataToPasses, pricingDataToTickets } from "@components/ticketing/pricingUtilities"
@@ -14,6 +15,7 @@ import { getUnixTime } from 'date-fns'
 type fieldEntry = {name: string, label?: string, placeholder?: string, type?: string, value?: string | number, error?: string, width?: string  }
 
 export default function CheckoutClient() {
+  const router = useRouter()
   const {data: pricingData, error, isLoading} = useSWR(`/api/pricing_table`, fetcher, { keepPreviousData: false });
   const [preferences, setPreferences] = useState(blankPreferences)
   const [selectedOptions, setSelectedOptions] = useState({} as any)
@@ -48,10 +50,11 @@ export default function CheckoutClient() {
   },[])
 
   useEffect(() => {
+    if(Object.keys(passes).length == 0) { console.log("Empty") }
     const calculatedBestCombo = getBestCombination(selectedOptions,student ? 'studentCost':'cost',individualTickets, passes)
     setBestCombo(calculatedBestCombo)
     console.log("Best Combo -","\nbestCombo",bestCombo,"\nselectedOptions",selectedOptions)
-  },[selectedOptions,student])
+  },[selectedOptions,student,passes,individualTickets])
 
   useEffect(() => {
     const allPassAndTicketPriceIds = priceIds(student,passes,individualTickets)
@@ -66,19 +69,21 @@ export default function CheckoutClient() {
   // }
 
   useEffect(() => {
-    // Generate Passes
-    const passesGenerated = pricingDataToPasses(pricingData)
-    // console.log("passesGenerated",passesGenerated)
-    setPasses(passesGenerated)
-
-    const generatedIndividualTicket = pricingDataToTickets(pricingData)
-    // console.log("generatedIndividualTicket",generatedIndividualTicket)
-    setIndividualTickets(generatedIndividualTicket)
-
+    if(pricingData) {
+      // Generate Passes
+      const passesGenerated = pricingDataToPasses(pricingData)
+      console.log("passesGenerated",passesGenerated)
+      setPasses(passesGenerated)
+  
+      const generatedIndividualTicket = pricingDataToTickets(pricingData)
+      // console.log("generatedIndividualTicket",generatedIndividualTicket)
+      setIndividualTickets(generatedIndividualTicket)
+  
+    }
   },[pricingData])
 
   async function freeCheckout() {
-    
+    // console.log(bestCombo.options)
     // Generate line items for each pass/ticket
     // const line_items = packages.map(passName => {
     //   const line_item = passes[passName] ? passes[passName] : individualTickets[passName.split(" ")[0]][passName.split(" ")[1]]
@@ -93,40 +98,56 @@ export default function CheckoutClient() {
     //   }
     // })
     // Record the sale
-    console.log("selectedOptions",selectedOptions)
-    const purchaseObj = {
-      'email': userData.email,       
-      'full_name': userData.name,
-      'purchase_date': getUnixTime(new Date()) ,
-      'line_items': [],
-      'access': [], //! use selectedAccessArray instead
-      'status': "prebook",
-      'student_ticket': false,
-    //   // 'promo_code': None|{
-    //   //     'code': "MLF",
-    //   //     'value': 500
-    //   // },
-    //  // 'meal_preferences': None|{},
-      'checkout_session': "none", 
-      'checkout_amount': bestCombo.price, 
-      'heading_message':"THANK YOU FOR YOUR PURCHASE",
-      'send_standard_ticket': true,
-    }
-    console.log("Purchase object",purchaseObj)
-    // const apiResponse = await fetch('/api/admin/epos', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(purchaseObj),
-    // })
-    // const apiData = await apiResponse.json() 
+    // console.log("selectedOptions",selectedOptions)
+    const purchaseObj = bestCombo.options.map((option) => {
+      const pass = passes[option]
+      // console.log(pass)
+
+      const line_item = {
+        'amount_total': pass.cost,  //studentDiscount ? line_item.cost * 100 : line_item.studentCost * 100,
+        'description': pass.name,
+        'price_id': option,
+      }
+      return {
+        'email': userData.email,       
+        'full_name': userData.name,
+        'purchase_date': getUnixTime(new Date()) ,
+        'line_items': [line_item],
+        'access': bestCombo.price == 0 ? [0,0,0,0,0,0] : [1,0,0,0,0,0], //! use selectedAccessArray instead
+        'status': bestCombo.price == 0 ? "prebook" : "paid",
+        'student_ticket': false,
+        'event': pass.combination[0].split(" ")[0],
+      //   // 'promo_code': None|{
+      //   //     'code': "MLF",
+      //   //     'value': 500
+      //   // },
+      //  // 'meal_preferences': None|{},
+        'checkout_session': "none", 
+        'checkout_amount': bestCombo.price, 
+        'heading_message':"THANK YOU FOR YOUR BOOKING",
+        'send_standard_ticket': true,
+      }
+    })
+    // console.log("Purchase object",purchaseObj)
+    const apiResponse = await fetch('/api/purchase', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(purchaseObj),
+    })
+    console.log("apiResponse",apiResponse)
+    const apiData = await apiResponse.json() 
+    console.log(apiData)
     // const apiAmmendedData = apiResponse.ok ? apiData : {...apiData, ticket_number: false }
     // console.log("apiData",apiAmmendedData)
     // setTicket(apiData.ticket_number)
-    // if(!apiResponse.ok) {
-    //   alert(`PROBLEM, ${JSON.stringify(apiData)} ${apiResponse.status}`)
-    // }
+    if(!apiResponse.ok) {
+      console.error("Broken")
+      alert(`PROBLEM, ${JSON.stringify(apiData)} ${apiResponse.status}`)
+    } else {
+     router.push('/') 
+    }
     // router.push("/admin/epos") //TODO This 100% needs a check for errors
     // Should reset the thing and unlock the form
     // setLocked(false)
@@ -155,7 +176,7 @@ export default function CheckoutClient() {
             <Icon data={{name: "BiCart", color: "purple", style: "circle", size: "medium"}} className="mr-2 border border-richblack-700"></Icon>
             {student ? "Student " : null}Passes selected
           </h2>
-          {JSON.stringify(bestCombo,null,2)}
+          {/* {JSON.stringify(bestCombo,null,2)} */}
           {bestCombo.options.map((index)=>{ return passes[index]?.name}).join(', ') } - {moneyString(bestCombo.price)}
         </Container>
 
