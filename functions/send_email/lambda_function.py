@@ -147,7 +147,7 @@ def generate_standard_ticket_body(data):
             rows = rows+"\n"+line_item_tmpl.substitute({
                 'item_name':item['description'], 
                 'i':i+1, 
-                'event_name':data['parent_event']
+                'event_name':data['parent_event_name']
                 # 'event_name':babel.numbers.format_currency(int(item['amount_total'])/100, "GBP", locale='en_UK')
             })
             total_amount += int(item['amount_total'])
@@ -162,6 +162,7 @@ def generate_standard_ticket_body(data):
             'payment_method_type': "Prebooking only" if data['is_prebook'] else "",
             'payment_method_2': "Save £2 on the door" if data['is_prebook'] else "",
             'ticket_row':rows, 
+            'ticket_number': data['ticket_number'],
             'additional_message':"With this ticket you must pay the remaning balance on the door." if data['is_prebook'] else "",
         })   
     return body
@@ -310,7 +311,7 @@ def lambda_handler(event, context):
         header_footer_tmpl = Template(header_footer_file.read())
         html_content = header_footer_tmpl.substitute({
             'body':body,
-            'event_name':event.get('parent_event', "this event.")
+            'event_name':event.get('parent_event_name', "this event.")
             })
 
     to_email = event['email']

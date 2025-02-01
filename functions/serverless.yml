@@ -227,9 +227,9 @@ functions:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
       STRIPE_SECRET_KEY: ${param:stripeSecretKey}
-      CREATE_TICKET_LAMBDA: "${sls:stage}-create_ticket" #! Can't find a way to set this other than as a params that gets used byt function and the function itself
+      CREATE_TICKET_LAMBDA: "rebelsbk-${sls:stage}-create_ticket" #! Can't find a way to set this other than as a params that gets used byt function and the function itself
       ATTENDEE_GROUPS_LAMBDA: "${sls:stage}-attendee_groups"
-      TICKET_UPGRADE_LAMBDA: "${sls:stage}-ticket_upgrade"
+      TICKET_UPGRADE_LAMBDA: "rebelsbk-${sls:stage}-ticket_upgrade"
     layers:
       - !Ref StripeLambdaLayer
       # - !Ref DynamodbLambdaLayer
@@ -253,7 +253,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
       STRIPE_SECRET_KEY: ${param:stripeSecretKey}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
       ATTENDEE_GROUPS_LAMBDA: "${sls:stage}-attendee_groups"
       EVENT_TABLE_NAME: ${param:eventTableName}      
     # layers:
@@ -380,7 +380,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       FROM_EMAIL: ${param:fromEmail}
       SENDGRID_API_KEY: ${param:sendgridApiKey}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
       MAILDEV_IP: "3.254.106.153"
     layers:
       - !Ref SendmailLambdaLayer
@@ -399,7 +399,7 @@ functions:
     environment:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     # layers:
     #   - !Ref DynamodbLambdaLayer
     #   - !Ref GithubLambdaLayer
@@ -446,7 +446,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
       CREATE_TICKET_LAMBDA: "${sls:stage}-create_ticket"
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
       ATTENDEE_GROUPS_LAMBDA: "${sls:stage}-attendee_groups"
     # layers:
     #   - !Ref SendmailLambdaLayer
@@ -492,7 +492,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
       EVENT_TABLE_NAME: ${param:eventTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     events:
       - httpApi:
           path: /import_tickets
@@ -513,7 +513,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     events:
       - httpApi:
           path: /attendee_groups
@@ -543,7 +543,7 @@ functions:
     environment:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
       EVENT_TABLE_NAME: ${param:eventTableName}
     events:
       - httpApi:
@@ -604,7 +604,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     events:
       - httpApi:
           path: /ticket_upgrade
@@ -625,7 +625,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     events:
       - httpApi:
           path: /ticket/activate
@@ -650,7 +650,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-meal_seating" # delete this, not used and wrong lambda name silly
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-meal_seating" # delete this, not used and wrong lambda name silly
     events:
       - httpApi:
           path: /meal/seating
@@ -674,7 +674,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     events:
 
       - httpApi:

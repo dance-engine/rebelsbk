@@ -129,7 +129,7 @@ def lambda_handler(event, context):
         'status': status,
         'student_ticket': student_ticket,
         'checkout_session': checkout_session,
-        'parent_event': parent_event
+        'parent_event': parent_event,
     }
 
     optional = ['schedule', 'meal_preferences', 'promo_code', 'history']
@@ -156,7 +156,8 @@ def lambda_handler(event, context):
                         'ticket_number':ticket_number, 
                         'line_items':line_items,
                         'parent_event': parent_event,
-                        'is_prebook': is_prebook
+                        'is_prebook': is_prebook,
+                        'parent_event_name':parent_event_data['name']
                     }, cls=DecimalEncoder),
                 )
             logger.info(response)
@@ -168,7 +169,7 @@ def lambda_handler(event, context):
         Key={'PK':parent_event, 'SK':parent_event},
         UpdateExpression="SET number_sold = number_sold + :inc",
         ExpressionAttributeValues={':inc': 1},
-        ConditionExpression="number_sold < number_sold"
+        ConditionExpression="number_sold < total_capacity"
     )                 
 
     return {
