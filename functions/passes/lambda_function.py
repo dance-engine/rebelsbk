@@ -52,18 +52,20 @@ def create_passes(data):
             pass_item = {
                 "PK": f"EVENT#{parent_event}",
                 "SK": f"EVENT#{parent_event}#PASS#{slug}",
-                "slug": slug,
-                "name": pass_data["name"],
-                "description": pass_data.get("description", ""),
-                "current_price": pass_data.get("current_price"),
-                "active": pass_data.get("current_price", False) and pass_data.get("active", False),
-                "tags": pass_data.get("tags", []),
-                "created_at": current_time,
-                "updated_at": current_time,
-                "type": "pass",
+                "slug":             slug,
+                "name":             pass_data["name"],
+                "description":      pass_data.get("description", ""),
+                "current_price":    pass_data.get("current_price"),
+                "active":           pass_data.get("current_price", False) and pass_data.get("active", False),
+                "tags":             pass_data.get("tags", []),
+                "created_at":       current_time,
+                "updated_at":       current_time,
+                "type":             "pass",
                 "organisation":     "rebel-sbk-events",
-                "price_id": pass_data.get("price_id", None),
-                "saving": pass_data.get("saving", 0)
+                "price_id":         pass_data.get("price_id", None),
+                "saving":           pass_data.get("saving", 0),
+                "limit":            pass_data.get("limit", 0),
+                "number_sold":      0
             }
 
             # Write the pass to DynamoDB

@@ -255,6 +255,7 @@ functions:
       STRIPE_SECRET_KEY: ${param:stripeSecretKey}
       SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
       ATTENDEE_GROUPS_LAMBDA: "${sls:stage}-attendee_groups"
+      EVENT_TABLE_NAME: ${param:eventTableName}      
     # layers:
     #   - !Ref DynamodbLambdaLayer
 
