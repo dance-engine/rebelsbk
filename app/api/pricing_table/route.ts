@@ -60,8 +60,13 @@ export async function GET(request) {
       },
     });
 
-    if (!passesResponse.ok) {
-      throw new Error("Failed to fetch passes.");
+    if (!passesResponse.ok ) {
+      if(passesResponse.status == 404) {
+        return Response.json({ message: "No events" }, { status: passesResponse.status });
+      }
+      else {
+        throw new Error("Failed to fetch passes.");
+      }
     }
 
     const passesData = await passesResponse.json();

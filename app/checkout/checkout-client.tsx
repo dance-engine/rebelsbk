@@ -69,15 +69,17 @@ export default function CheckoutClient() {
   // }
 
   useEffect(() => {
-    // Generate Passes
-    const passesGenerated = pricingDataToPasses(pricingData)
-    console.log("passesGenerated",passesGenerated)
-    setPasses(passesGenerated)
-
-    const generatedIndividualTicket = pricingDataToTickets(pricingData)
-    // console.log("generatedIndividualTicket",generatedIndividualTicket)
-    setIndividualTickets(generatedIndividualTicket)
-
+    if(pricingData) {
+      // Generate Passes
+      const passesGenerated = pricingDataToPasses(pricingData)
+      console.log("passesGenerated",passesGenerated)
+      setPasses(passesGenerated)
+  
+      const generatedIndividualTicket = pricingDataToTickets(pricingData)
+      // console.log("generatedIndividualTicket",generatedIndividualTicket)
+      setIndividualTickets(generatedIndividualTicket)
+  
+    }
   },[pricingData])
 
   async function freeCheckout() {
