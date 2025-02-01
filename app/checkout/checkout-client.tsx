@@ -11,8 +11,10 @@ import StripeForm from "./stripe"
 import { fetcher } from '../../lib/fetchers'
 import useSWR from 'swr';
 import { getUnixTime } from 'date-fns'
+import Alert from '@components/generic/alert'
 
 type fieldEntry = {name: string, label?: string, placeholder?: string, type?: string, value?: string | number, error?: string, width?: string  }
+type statusMessageType = { message:string, type:string,dismissFunction:Function } | boolean
 
 export default function CheckoutClient() {
   const router = useRouter()
@@ -26,6 +28,8 @@ export default function CheckoutClient() {
   const [student, setStudent] = useState(false as boolean)
   const [steps, setSteps] = useState({details: false, meal: false, payment: false})
   const [bestCombo,setBestCombo] = useState({price:0, options: []})
+  const [submitting, setSubmitting] = useState(false)
+  const [statusMessage,setStatusMessage] = useState(false as statusMessageType)
 
   const yourDetailsFields: fieldEntry[] = [
     {name: 'name', placeholder: "Johnn Salsa", width: "w-80", label: "Full Name"},
@@ -83,22 +87,6 @@ export default function CheckoutClient() {
   },[pricingData])
 
   async function freeCheckout() {
-    // console.log(bestCombo.options)
-    // Generate line items for each pass/ticket
-    // const line_items = packages.map(passName => {
-    //   const line_item = passes[passName] ? passes[passName] : individualTickets[passName.split(" ")[0]][passName.split(" ")[1]]
-    //   if (line_item) {
-    //     return {
-    //       'amount_total': formObject.get("inperson-amount"),  //studentDiscount ? line_item.cost * 100 : line_item.studentCost * 100,
-    //       'description': passName,
-    //       'price_id': studentDiscount ? line_item.studentPriceId : line_item.priceId,
-    //     }
-    //   } else {
-    //     return { 'amount_total': 0, 'description': passName, 'price_id': "broken", }
-    //   }
-    // })
-    // Record the sale
-    // console.log("selectedOptions",selectedOptions)
     const purchaseObj = bestCombo.options.map((option) => {
       const pass = passes[option]
       // console.log(pass)
@@ -117,11 +105,6 @@ export default function CheckoutClient() {
         'status': bestCombo.price == 0 ? "prebook" : "paid",
         'student_ticket': false,
         'event': pass.combination[0].split(" ")[0],
-      //   // 'promo_code': None|{
-      //   //     'code': "MLF",
-      //   //     'value': 500
-      //   // },
-      //  // 'meal_preferences': None|{},
         'checkout_session': "none", 
         'checkout_amount': bestCombo.price, 
         'heading_message':"THANK YOU FOR YOUR BOOKING",
@@ -144,13 +127,14 @@ export default function CheckoutClient() {
     // setTicket(apiData.ticket_number)
     if(!apiResponse.ok) {
       console.error("Broken")
-      alert(`PROBLEM, ${JSON.stringify(apiData)} ${apiResponse.status}`)
+      setStatusMessage({message: "Could not create all tickets", type:'bad', dismissFunction: ()=>{setStatusMessage(false);}} satisfies statusMessageType)
     } else {
-     router.push('/') 
+      router.push(`/checkout/complete?message=${encodeURIComponent('Tickets have been sent')}&type=good`) 
     }
     // router.push("/admin/epos") //TODO This 100% needs a check for errors
     // Should reset the thing and unlock the form
     // setLocked(false)
+    setSubmitting(false)
   }
 
 
@@ -164,11 +148,13 @@ export default function CheckoutClient() {
   if(has_events) {
     return (
       <div className="">
+        
         <Container size="small" width="medium" className=" text-white w-full py-0">
-        <div className="intro">
+        <div className="intro mb-6">
           <h1 className="text-3xl font-bold text-white">Checkout</h1>
           <p>Nearly there! We just need a few details from you (and some money of course) and you&apos;ll be all booked in.</p>
         </div>
+        { typeof statusMessage !== "boolean" ? <Alert message={statusMessage.message} type={statusMessage.type} dismissFunction={statusMessage.dismissFunction}/> : null }
         </Container>
 
         <Container size="small" width="medium" className=" text-white w-full rounded-3xl border border-richblack-700 bg-richblack-500 py-6 transition-all	">
@@ -268,8 +254,9 @@ export default function CheckoutClient() {
             <div className="px-6 pt-6 ">
               <button
                 type="submit"
+                onClick={()=>{setSubmitting(true)}}
                 className="py-2 px-4 bg-blue-500 text-white rounded-lg font-semibold shadow-sm">
-                Complete Booking
+                {submitting ? "Please wait" : "Complete Booking"}
               </button>
             </div>
           </form>

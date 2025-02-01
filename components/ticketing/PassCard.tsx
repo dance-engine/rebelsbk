@@ -1,17 +1,21 @@
 import React from 'react';
 import { fullPassName } from './pricingDefaults';
 import { moneyString } from '../../lib/useful'
+import { format,parseISO, getUnixTime, fromUnixTime, subMinutes} from "date-fns";
+
 
 export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving, selected, included, basic, locked, hero= false}:
   {passName:string, clickFunction:any, pass:any, priceModel:string, hasASaving:boolean, selected:boolean, included?:boolean, basic?:boolean, locked?:boolean, hero?:boolean}
 ) => {
   const cardWidthClasses = passName === fullPassName && hero ? 'col-span-full' : basic ? 'flex-col': 'md:flex-col'
   const passPadding = basic ? 'p-4 md:p-4' : 'p-6 md:p-10'
+  const titleTextSize = basic ? 'text-sm md:text-sm' : 'text-xl md:text-2xl'
   const baseTextSize = basic ? 'text-sm md:text-sm' : 'text-xl md:text-base'
   const priceTextSize = basic ? 'text-sm md:text-sm leading-7' : 'text-4xl md:text-4xl'
   const hoverClasses = locked ? 'hover:border-richblack-500 cursor-not-allowed' : 
     selected ? "border-white cursor-pointer" : 
     included ? 'hover:border-richblack-500 cursor-not-allowed' : 'hover:border-white cursor-pointer'
+  const eventDateString = pass?.event?.start_time ? format(fromUnixTime(pass.event.start_time),'h:mmaaa EEEE do MMMM'): null
   return (
     <div
       onClick={locked ? ()=>{console.log('locked')} : clickFunction}
@@ -24,12 +28,13 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
 
         <div className='col-span-2'>
           
-          <h3 id={passName} className={`${baseTextSize} leading-7 text-[#EA4891] font-black uppercase w-full md:w-auto col-span-2 m-h-12`}>
+          <h3 id={passName} className={`${titleTextSize} leading-7 text-[#EA4891] font-black uppercase w-full md:w-auto col-span-2 m-h-12`}>
             {pass.name}
           </h3>
-          
+          {eventDateString ? <p>{eventDateString}</p> : null }
+
           {basic ? null : <p className="mt-2 text-sm md:text-base leading-7 col-span-3 text-white">
-            {pass.description}
+            {pass.description} 
           </p> }
 
         </div>

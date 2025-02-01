@@ -243,8 +243,9 @@ const pricingDataToPasses = (pricingData) => {
         studentSaving: 2,
         combination: pass.associated_items.map(item => `${event.SK} ${item.item}`),
         description: pass.description,
-        priceId: 'price_1QQneIEWkmdeWsQPJhsLrRof',
-        studentPriceId: 'price_1QQnjjEWkmdeWsQPgurnBDwI'
+        priceId: 'price_FAKED',
+        studentPriceId: 'none',
+        event: event
       }
       return obj
     },obj)
