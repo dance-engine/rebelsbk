@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   //   },
   //   body: JSON.stringify(body) //! Adam TODO: Make sure body includes 'parent_event': "EVENT#{slug-of-event}"
   // })
-  if(!success || true ) {
+  if(!success) {
     return NextResponse.json({error: "Could not generate all tickets", generated_at: new Date().toISOString() }, {status: 500})
   }
   // const checkoutData = await checkoutResponse.json()

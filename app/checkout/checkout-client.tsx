@@ -134,15 +134,16 @@ export default function CheckoutClient() {
       },
       body: JSON.stringify(purchaseObj),
     })
+    console.log("apiResponse",apiResponse)
     const apiData = await apiResponse.json() 
     console.log(apiData)
     // const apiAmmendedData = apiResponse.ok ? apiData : {...apiData, ticket_number: false }
     // console.log("apiData",apiAmmendedData)
     // setTicket(apiData.ticket_number)
     if(!apiResponse.ok) {
+      console.error("Broken")
       alert(`PROBLEM, ${JSON.stringify(apiData)} ${apiResponse.status}`)
-    } else 
-    {
+    } else {
      router.push('/') 
     }
     // router.push("/admin/epos") //TODO This 100% needs a check for errors
