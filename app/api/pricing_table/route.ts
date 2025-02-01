@@ -34,7 +34,7 @@ export async function GET(request) {
   // console.log(passesURL)
   // console.log(individualItemsURL)
 
-  const eventsURL = [process.env.LAMBDA_EVENTS,eventSlug].join('?event=')
+  const eventsURL = [process.env.LAMBDA_EVENTS,eventSlug].filter(elm => elm).join('?event=')
   console.log("eventsURL",eventsURL)
 
   try {

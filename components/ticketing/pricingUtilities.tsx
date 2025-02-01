@@ -139,11 +139,11 @@ const itemsNotCovered = (optionsRequested,optionsCovered) => {
   return Array.from(requested.difference(covered).values())
 }
 const getBestCombination = (options,priceModel, individualTickets: any[],passes: Passes) => {
-  // console.log("BEST COMBO!!!!!")
-  // console.log(options)
+  console.log("BEST COMBO!!!!!")
+  console.log(options)
   // console.log(priceModel)
   // console.log(individualTickets)
-  // console.log(passes)
+  console.log("passes",passes)
   // console.log("")
   if(optionsToPassArray(options).length == 0) {
     return {price: 0, options: []}
@@ -153,7 +153,7 @@ const getBestCombination = (options,priceModel, individualTickets: any[],passes:
   let bestOptions = []
   let bestPrice = 9999.00
   passCombinations.forEach((passCombination: any[]) => {
-    // console.log("passCombination,priceModel",passCombination,priceModel)
+    console.log("passCombination,priceModel",passCombination,priceModel)
     const packagePrice = priceForPassCombination(passCombination,priceModel,passes)
     // console.log(" - packagePrice", packagePrice)
     const tickePrice = priceForIndividualItems(itemsNotCovered(optionsToPassArray(options),itemsFromPassCombination(passCombination,passes)),individualTickets)
@@ -162,7 +162,11 @@ const getBestCombination = (options,priceModel, individualTickets: any[],passes:
     // console.log(" - combinedPrice", combinedPrice)
     if(combinedPrice <= bestPrice) {
       bestPrice = combinedPrice
-      bestOptions = [...passCombination, ...itemsNotCovered(optionsToPassArray(options),itemsFromPassCombination(passCombination,passes))]
+      const passArray = optionsToPassArray(options)
+      const passComboGen = itemsFromPassCombination(passCombination,passes)
+      const itemNotCovered = itemsNotCovered(passArray,passComboGen)
+      console.log(passArray)
+      bestOptions = [...passCombination, ...itemNotCovered]
     }
   })
   return {price: bestPrice, options: bestOptions}
