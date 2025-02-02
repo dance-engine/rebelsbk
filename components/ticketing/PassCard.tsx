@@ -10,7 +10,7 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
   const cardWidthClasses = passName === fullPassName && hero ? 'col-span-full' : basic ? 'flex-col': 'md:flex-col'
   const passPadding = basic ? 'p-4 md:p-4' : 'p-6 md:p-10'
   const titleTextSize = basic ? 'text-sm md:text-sm' : 'text-xl md:text-2xl'
-  const baseTextSize = basic ? 'text-sm md:text-sm' : 'text-xl md:text-base'
+  // const baseTextSize = basic ? 'text-sm md:text-sm' : 'text-xl md:text-base'
   const priceTextSize = basic ? 'text-sm md:text-sm leading-7' : 'text-4xl md:text-4xl'
   const hoverClasses = locked ? 'hover:border-richblack-500 cursor-not-allowed' : 
     selected ? "border-white cursor-pointer" : 
