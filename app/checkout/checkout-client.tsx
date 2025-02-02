@@ -152,7 +152,7 @@ export default function CheckoutClient() {
         <Container size="small" width="medium" className=" text-white w-full py-0">
         <div className="intro mb-6">
           <h1 className="text-3xl font-bold text-white">Checkout</h1>
-          <p>Nearly there! We just need a few details from you (and some money of course) and you&apos;ll be all booked in.</p>
+          <p>Nearly there! We just need a few details from you and you&apos;ll be all booked in.</p>
         </div>
         { typeof statusMessage !== "boolean" ? <Alert message={statusMessage.message} type={statusMessage.type} dismissFunction={statusMessage.dismissFunction}/> : null }
         </Container>
