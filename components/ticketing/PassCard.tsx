@@ -1,7 +1,7 @@
 import React from 'react';
 import { fullPassName } from './pricingDefaults';
 import { moneyString } from '../../lib/useful'
-import { format,parseISO, getUnixTime, fromUnixTime, subMinutes} from "date-fns";
+import { format, fromUnixTime } from "date-fns";
 
 
 export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving, selected, included, basic, locked, hero= false}:
