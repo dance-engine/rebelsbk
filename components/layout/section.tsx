@@ -61,6 +61,7 @@ export const Section = ({ children, color = "", className = "" , backgroundImage
         style={{
           backgroundImage: `url(${backgroundImage})`,
           backgroundPositionX: '50%',
+          backgroundPositionY: '20%',
           opacity: 0.7,
         }}
       />
