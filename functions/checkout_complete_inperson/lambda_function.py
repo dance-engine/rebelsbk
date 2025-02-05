@@ -130,6 +130,9 @@ def lambda_handler(event, context):
         'student_ticket': student_ticket,
         'checkout_session': checkout_session,
         'parent_event': parent_event,
+        'marketing_preference': event.get('marketing'),
+        'questionnaire_answers':event.get("answers", {})
+
     }
 
     optional = ['schedule', 'meal_preferences', 'promo_code', 'history']
