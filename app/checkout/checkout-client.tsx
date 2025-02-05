@@ -12,8 +12,11 @@ import { fetcher } from '../../lib/fetchers'
 import useSWR from 'swr';
 import { getUnixTime } from 'date-fns'
 import Alert from '@components/generic/alert'
+import Confirmation from '@components/admin/forms/Confirmation';
+import DatePicker from '@components/admin/forms/DatePicker';
+import Select from '@components/admin/forms/Select';
 
-type fieldEntry = {name: string, label?: string, placeholder?: string, type?: string, value?: string | number, error?: string, width?: string  }
+type fieldEntry = {name: string, label?: string, placeholder?: string, type?: string, value?: string | number, error?: string, width?: string , options?: string[]}
 type statusMessageType = { message:string, type:string,dismissFunction:Function } | boolean
 
 export default function CheckoutClient() {
@@ -24,18 +27,27 @@ export default function CheckoutClient() {
   const [passes,setPasses] = useState({})
   const [individualTickets,setIndividualTickets] = useState([])
   const [stripeProducts,setStripeProducts] = useState(false as boolean | string[])
-  const [userData, setUserData] = useState(false as any)
+  // const [userData, setUserData] = useState(false as any)
+  const [userData, setUserData] = useState({name: "Adam", email: "adam.bardsley@gmail.com", phone: "234567890"} as any)
   const [student, setStudent] = useState(false as boolean)
   const [steps, setSteps] = useState({details: false, meal: false, payment: false})
   const [bestCombo,setBestCombo] = useState({price:0, options: []})
   const [submitting, setSubmitting] = useState(false)
   const [statusMessage,setStatusMessage] = useState(false as statusMessageType)
+  const [errors,setErrors] = useState({})
 
   const yourDetailsFields: fieldEntry[] = [
     {name: 'name', placeholder: "Johnn Salsa", width: "w-80", label: "Full Name"},
     {name: 'email', placeholder: "johnny@salsa.com", type: "email", width: "w-96"},
     {name: 'phone', placeholder: "0770912781367", width: "w-96"},
     {name: 'number_of_tickets', value: 1, type: "hidden"},
+    {name: 'marketing', type: "confirmation", label: "Are you happy to hear about other events and offers from Rebel SBK and Dance Engine?"}
+  ]
+  
+  const yourAnswerFields: fieldEntry[] = [
+    {name: 'started_dancing', label: "Roughly when did you start dancing?", type: 'date_picker'},
+    {name: 'dance_style', label: "What style do you like to dance?", width: "w-80",},
+    {name: 'heard_about', label: "How did you hear about us?", type: "select", options: ["Social Media","Fellow dancer Recommendation","Artist Promotion","Class or Event","Flyer","Email","Google Search"]},
   ]
 
   const nextStep = (step) => {
@@ -86,6 +98,22 @@ export default function CheckoutClient() {
     }
   },[pricingData])
 
+  const validateForm = (userData) => {
+    let newErrors = {}
+    if(!(userData?.name && userData?.name.split(" ").length >= 2)) {
+      newErrors = {...newErrors, 'name': `"${userData.name}" isn't a full name`}
+    } 
+    if(!(userData?.email && userData?.email.split("@").length == 2)) {
+      newErrors = {...newErrors, 'email': `"${userData.email}" isn't a valid email`}
+    } 
+    if(!(userData?.marketing)) {
+      newErrors = {...newErrors, 'marketing': `Can we send you info about events?`}
+    } 
+    console.error(newErrors)
+    setErrors(newErrors)
+    return Object.keys(newErrors).length < 1 ? true : false
+  }
+
   async function freeCheckout() {
     const purchaseObj = bestCombo.options.map((option) => {
       const pass = passes[option]
@@ -99,6 +127,8 @@ export default function CheckoutClient() {
       return {
         'email': userData.email,       
         'full_name': userData.name,
+        'phone': userData.phone,
+        'marketing': userData.marketing == 'true' ? true : userData.marketing == 'false' ? false : null,
         'purchase_date': getUnixTime(new Date()) ,
         'line_items': [line_item],
         'access': bestCombo.price == 0 ? [0,0,0,0,0,0] : [1,0,0,0,0,0], //! use selectedAccessArray instead
@@ -109,6 +139,7 @@ export default function CheckoutClient() {
         'checkout_amount': bestCombo.price, 
         'heading_message':"THANK YOU FOR YOUR BOOKING",
         'send_standard_ticket': true,
+        'answers': userData.answers
       }
     })
     // console.log("Purchase object",purchaseObj)
@@ -128,13 +159,10 @@ export default function CheckoutClient() {
     if(!apiResponse.ok) {
       console.error("Broken")
       setStatusMessage({message: "Could not create all tickets", type:'bad', dismissFunction: ()=>{setStatusMessage(false);}} satisfies statusMessageType)
+      setSubmitting(false)
     } else {
       router.push(`/checkout/complete?message=${encodeURIComponent('Tickets have been sent')}&type=good`) 
     }
-    // router.push("/admin/epos") //TODO This 100% needs a check for errors
-    // Should reset the thing and unlock the form
-    // setLocked(false)
-    setSubmitting(false)
   }
 
 
@@ -173,9 +201,10 @@ export default function CheckoutClient() {
         </h2>
         { steps.details ? (
             <>
-              Name: {userData.name} <br/>
-              Email: {userData.email}<br/>
-              Phone: {userData.phone}<br/>
+              Name: {userData.name } <br/>
+              Email: {userData.email }<br/>
+              Phone: {userData.phone }<br/>
+              {userData.marketing == "true" ? "Send me details about events/offers" : "Only contact me about this ticket"}<br/>
               <button className="mt-3 border px-6 py-1 border-white rounded-md" onClick={() => setSteps({...steps,details:false})}>Edit</button>
             </>) :
             (<>
@@ -184,38 +213,57 @@ export default function CheckoutClient() {
               {yourDetailsFields.map((field) => {
                   const statusClass = field.error ? "text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500" : ""
                   const otherClass = field.width ? field.width : "w-40 md:w-64 max-w-full"
-                return (
-                  <div className="mt-3" key={field.name}>
-                    { field.type && field.type == 'hidden' ? null 
-                    : <label htmlFor={field.name} className="block text-sm font-medium leading-6 text-white capitalize">
-                        {field.label || field.name }
-                      </label>
-                    }
-                      
-                    <div className="relative mt-2 rounded-md shadow-sm">
-                      <input
-                        id={field.name}
-                        name={field.name}
-                        type={field.type || "text"}
-                        placeholder={field.placeholder || null}
-                        defaultValue={userData[field.name] || null}
-                        aria-invalid="true"
-                        aria-describedby={`${field.name}-error`}
-                        onChange={(e) => {
-                          setUserData({...userData, [field.name]: e.target.value})
-                        }}
-                        className={`block rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset text-gray-900 sm:text-sm sm:leading-6 max-w-full ${statusClass} ${otherClass}`}
-                      />
-                      { field.error ? <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                        <ExclamationCircleIcon aria-hidden="true" className="h-5 w-5 text-red-500" />
-                      </div> : null }
-                    </div>
-                    {field.error ? <p id={`${field.name}-error`} className="mt-2 text-sm text-red-600">Not a valid email address.</p> : null }
-                  </div>
-                )
+                  if(field.type == 'confirmation') {
+                    return <div className="mt-3" key={field.name}>
+                        <Confirmation key={field.name} field={field} currentValue={userData[field.name]} onChange={(e) => { setUserData({...userData, [field.name]: e.target.value})}}/>
+                        {errors[field.name] ? <p id={`${field.name}-error`} className="mt-0 text-sm text-red-600 mb-3">{errors[field.name]}</p> : null }
+                      </div>
+                  } else if(field.type == 'date_picker') {
+                    return <Confirmation key={field.name} field={field} currentValue={userData[field.name]} onChange={(e) => {
+                      console.log("Event",e,{...userData, [field.name]: e.target.value})
+                      setUserData({...userData, [field.name]: e.target.value})
+                    }}/>
+                  } else if(field.type == 'select') {
+                    return <Select key={field.name} field={field} initialValue={userData[field.name]} onChange={(e) => {
+                      console.log("Event",e,{...userData, [field.name]: e.target.value})
+                      setUserData({...userData, [field.name]: e.target.value})
+                    }}/>
+                  } else {
+                    return (
+                      <div className="mt-3" key={field.name}>
+                        { field.type && field.type == 'hidden' ? null 
+                        : <label htmlFor={field.name} className="block text-sm font-medium leading-6 text-white capitalize">
+                            {field.label || field.name }
+                          </label>
+                        }
+                          
+                        <div className="relative mt-2 rounded-md shadow-sm">
+                          <input
+                            id={field.name}
+                            name={field.name}
+                            type={field.type || "text"}
+                            placeholder={field.placeholder || null}
+                            defaultValue={userData[field.name] }
+                            aria-invalid="true"
+                            aria-describedby={`${field.name}-error`}
+                            onChange={(e) => {
+                              setUserData({...userData, [field.name]: e.target.value})
+                            }}
+                            className={`block rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset text-gray-900 sm:text-sm sm:leading-6 max-w-full ${statusClass} ${otherClass}`}
+                          />
+                          { field.error ? <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                            <ExclamationCircleIcon aria-hidden="true" className="h-5 w-5 text-red-500" />
+                          </div> : null }
+                        </div>
+                        {errors[field.name] ? <p id={`${field.name}-error`} className="mt-2 text-sm text-red-600">{errors[field.name]}</p> : null }
+                      </div>
+                    )
+                  }
+                
               })}
 
-              <button className="bg-chillired-400 px-6 py-2 rounded" onClick={() => nextStep('details')}>Continue</button>
+
+              <button className="bg-blue-400 px-6 py-2 rounded mt-3" onClick={() => { if(validateForm(userData)) { nextStep('details'); } }}>Continue</button>
             </>)
         }
       </Container>
@@ -244,22 +292,76 @@ export default function CheckoutClient() {
           : <div className="text-center"><h2 className="text-2xl">Not Ready for payment</h2><p>Payment form will load once you have finished editing the above information</p></div>
         }
       </Container> : 
-      <Container size="small" width="medium" className=" text-white w-full rounded-3xl border border-richblack-700 bg-richblack-500 py-0 md:pt-6 pb-6 md:pb-16 px-3 md:px-0 flex flex-col ">
-        <h2 className="text-xl flex items-center -ml-12 md:-ml-6">
+        <Container size="small" width="medium" className=" text-white w-full rounded-3xl border border-richblack-700 bg-richblack-500 py-6 transition-all	">
+        <h2 className="text-xl flex items-center -ml-14">
           <Icon data={{name: "BiPound", color: "green", style: "circle", size: "medium"}} className="mr-2 border border-richblack-700"></Icon>
           It&apos;s free!
         </h2>
         {dinnerInfoProvided && userData.email && stripeReady && steps.details && ( steps.meal || !dinnerInfoRequired)  ?
-          <form action={freeCheckout} className="">
-            <div className="px-6 pt-6 ">
-              <button
-                type="submit"
-                onClick={()=>{setSubmitting(true)}}
-                className="py-2 px-4 bg-blue-500 text-white rounded-lg font-semibold shadow-sm">
-                {submitting ? "Please wait" : "Complete Booking"}
-              </button>
-            </div>
-          </form>
+          <>
+          {yourAnswerFields.map((field) => {
+                  const statusClass = field.error ? "text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500" : ""
+                  const otherClass = field.width ? field.width : "w-40 md:w-64 max-w-full"
+                  if(field.type == 'confirmation') {
+                    return <Confirmation key={field.name} field={field} currentValue={userData.answers?.[field.name]} onChange={(e) => {
+                      console.log("Event",e,{...userData, [field.name]: e.target.value})
+                      setUserData({...userData, answers: {...userData.answers, [field.name]: e.target.value}})
+                    }}/>
+                  } else if(field.type == 'date_picker') {
+                    return <DatePicker key={field.name} field={field} initialValue={userData.answers?.[field.name]} onChange={(e) => {
+                      console.log("Event",e,{...userData, [field.name]: e})
+                      setUserData({...userData, answers: {...userData.answers, [field.name]: e}})
+                    }}/>
+                  } else if(field.type == 'select') {
+                    return <Select key={field.name} field={field} initialValue={userData.answers?.[field.name]} onChange={(e) => {
+                      console.log("Event",e,{...userData, [field.name]: e})
+                      setUserData({...userData, answers: {...userData.answers, [field.name]: e}})
+                    }}/>
+                  } else {
+                    return (
+                      <div className="mt-3" key={field.name}>
+                        { field.type && field.type == 'hidden' ? null 
+                        : <label htmlFor={field.name} className="block text-sm font-medium leading-6 text-white capitalize">
+                            {field.label || field.name }
+                          </label>
+                        }
+                          
+                        <div className="relative mt-2 rounded-md shadow-sm">
+                          <input
+                            id={field.name}
+                            name={field.name}
+                            type={field.type || "text"}
+                            placeholder={field.placeholder || null}
+                            defaultValue={userData[field.name] }
+                            aria-invalid="true"
+                            aria-describedby={`${field.name}-error`}
+                            onChange={(e) => {
+                              setUserData({...userData, answers: {...userData.answers, [field.name]: e.target.value}})
+                            }}
+                            className={`block rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset text-gray-900 sm:text-sm sm:leading-6 max-w-full ${statusClass} ${otherClass}`}
+                          />
+                          { field.error ? <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                            <ExclamationCircleIcon aria-hidden="true" className="h-5 w-5 text-red-500" />
+                          </div> : null }
+                        </div>
+                        {field.error ? <p id={`${field.name}-error`} className="mt-2 text-sm text-red-600">Not a valid email address.</p> : null }
+                      </div>
+                    )
+                  }
+              })}
+
+            <form action={freeCheckout} className="">
+              <div className="px-0 pt-6 ">
+                <button
+                  type="submit"
+                  onClick={()=>{setSubmitting(true)}}
+                  className="py-2 px-4 bg-green-500 text-white rounded-lg font-semibold shadow-sm">
+                  {submitting ? "Please wait" : "Complete Booking"}
+                </button>
+              </div>
+            </form>
+            
+          </>
           
           : <div className="text-center"><h2 className="text-2xl">Finish adding your details</h2><p>As soon as you&apos;ve added your information we can book you in</p></div>
         }
@@ -272,6 +374,7 @@ export default function CheckoutClient() {
         <hr />
         <h2>Debug Ignore below the line</h2>
         <div className=' text-white text-xs'>
+          <pre>{JSON.stringify(userData,null,2)}</pre>
           <pre>{JSON.stringify(selectedOptions,null,2)}</pre>
           <pre>{JSON.stringify(bestCombo,null,2)}</pre>
           {/* <pre>{JSON.stringify(stripeProducts,null,2)}</pre> */}

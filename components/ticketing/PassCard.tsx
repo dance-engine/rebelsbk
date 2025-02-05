@@ -15,7 +15,7 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
   const hoverClasses = locked ? 'hover:border-richblack-500 cursor-not-allowed' : 
     selected ? "border-white cursor-pointer" : 
     included ? 'hover:border-richblack-500 cursor-not-allowed' : 'hover:border-white cursor-pointer'
-  const eventDateString = pass?.event?.start_time ? format(fromUnixTime(pass.event.start_time),'h:mmaaa EEEE do MMMM'): null
+  const eventDateString = pass?.event?.start_time ? format(fromUnixTime(pass.event.start_time),'EEEE do MMMM, h:mmaaa'): null
   return (
     <div
       onClick={locked ? ()=>{console.log('locked')} : clickFunction}
