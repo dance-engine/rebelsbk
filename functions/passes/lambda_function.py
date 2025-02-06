@@ -169,7 +169,7 @@ def update_passes(parent_event, updates_list):
                 raise ValueError("Each update must include a 'slug' and 'updates' dictionary.")
 
             # Construct update expressions
-            pk = f"EVENT#{parent_event}"
+            pk = f"{parent_event}"
             sk = f"{pk}#PASS#{slug}"
 
             update_expr_parts = []
@@ -199,7 +199,7 @@ def update_passes(parent_event, updates_list):
                 )
                 updated_passes.append({"slug": slug, "updated_at": current_time})
             except table.meta.client.exceptions.ConditionalCheckFailedException:
-                logger.warning("Pass does not exist: %s", slug)
+                logger.warning("Pass does not exist: \nslug = %s, \nPK = %s, \nSK = %s", slug, pk, sk)
                 raise ValueError(f"Pass with slug '{slug}' does not exist.")
 
         return updated_passes
