@@ -170,7 +170,7 @@ def update_passes(parent_event, updates_list):
 
             # Construct update expressions
             pk = f"EVENT#{parent_event}"
-            sk = f"PASS#{slug}"
+            sk = f"{pk}#PASS#{slug}"
 
             update_expr_parts = []
             expr_attr_values = {}
