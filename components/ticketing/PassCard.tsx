@@ -16,6 +16,7 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
     selected ? "border-white cursor-pointer" : 
     included ? 'hover:border-richblack-500 cursor-not-allowed' : 'hover:border-white cursor-pointer'
   const eventDateString = pass?.event?.start_time ? format(fromUnixTime(pass.event.start_time),'EEEE do MMMM, h:mmaaa'): null
+  const prebookTicket = /prebook/.test(pass.slug) ? true : false
   return (
     <div
       onClick={locked ? ()=>{console.log('locked')} : clickFunction}
@@ -24,14 +25,15 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
       className={`relative flex flex-col justify-between rounded-3xl bg-richblack-600 ${passPadding} shadow-xl 
       ring-1 ring-gray-900/10  text-white border border-richblack-500 ${hoverClasses} ${cardWidthClasses}`}
     >
-      <div className={`grid grid-cols-3 gap-2 md:flex flex-wrap md:flex-nowrap md:justify-between h-full w-full ${cardWidthClasses}`}>
+      <div className={`grid grid-cols-5 gap-2 md:flex flex-wrap md:flex-nowrap md:justify-between h-full w-full ${cardWidthClasses}`}>
 
-        <div className='col-span-2'>
+        <div className='col-span-3'>
           
+          {eventDateString ? <p>{eventDateString}</p> : null }
           <h3 id={passName} className={`${titleTextSize} leading-7 text-rebelred-600 font-black uppercase w-full md:w-auto col-span-2 m-h-12`}>
             {pass.name}
           </h3>
-          {eventDateString ? <p>{eventDateString}</p> : null }
+          
 
           {basic ? null : 
             <div className='mt-3'>
@@ -43,12 +45,12 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
         </div>
         
 
-        <div className={`flex ${ basic ? "flex-row justify-end": "flex-col" } items-baseline gap-x-2 place-content-center md:place-content-start col-start-3 col-span-1`}>
-          <span className={`${priceTextSize} font-bold tracking-tight text-white`}>
-            {moneyString(pass[priceModel])}
+        <div className={`flex ${ basic ? "flex-row justify-end": "flex-col justify-stretch" } items-baseline gap-x-2 place-content-center md:place-content-start col-start-4 col-span-2`}>
+          <span className={`${priceTextSize} font-bold tracking-tight leading-none text-white text-right`}>
+            {prebookTicket ? "PAY ON DOOR": moneyString(pass[priceModel])}
           </span>
           {hasASaving && !basic? (
-          <div className="mt-0 flex items-baseline gap-x-2 place-content-center	md:place-content-start">
+          <div className="mt-0 flex items-baseline w-full gap-x-2 place-content-end	md:place-content-start ">
             <span className="text-base font-semibold leading-7 text-gold-500">
             Save  £{priceModel == "studentCost" ? (pass.studentSaving % 1 != 0 ? pass.studentSaving.toFixed(2) : pass.studentSaving) : (pass.saving % 1 != 0 ? pass.saving.toFixed(2) : pass.saving)} {included ? "included" : ""}  
             </span>

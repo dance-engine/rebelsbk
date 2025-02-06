@@ -239,12 +239,13 @@ const pricingDataToPasses = (pricingData) => {
         cost: pass.current_price,
         studentCost: 0,
         isAvailable: pass.active > 0 ? true : false,
-        saving: 2,
+        saving: 2, //! This is REALLY bad
         studentSaving: 2,
         combination: pass.associated_items.map(item => `${event.SK} ${item.item}`),
         description: pass.description,
         priceId: 'price_FAKED',
         studentPriceId: 'none',
+        slug: pass.slug,
         event: event
       }
       return obj
