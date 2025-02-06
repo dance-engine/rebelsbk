@@ -138,6 +138,7 @@ def group_rec(data):
     return group_body
     
 def generate_standard_ticket_body(data):
+    logger.info(json.dumps(data, indent=2))
     rows = ""
     total_amount = 0
     # generate table of items purchased
@@ -155,15 +156,23 @@ def generate_standard_ticket_body(data):
     with open("./send_email/ticket_body.html", "r") as body_file:
         body_tmpl = Template(body_file.read())
         subdomain = "www" if stage_name == "prod" else stage_name
+
+        if total_amount > 0:
+            amount_total = babel.numbers.format_currency(int(total_amount)/100, "GBP", locale='en_UK')
+        elif data['is_prebook']:
+            amount_total = "Pay Later"
+        elif total_amount == 0 and not data['is_prebook']:
+            amount_total = "FREE"
+
         body = body_tmpl.substitute({
             'full_name':data['name'], 
             'personal_info_1':data['email'], 
-            'amount_total':babel.numbers.format_currency(int(total_amount)/100, "GBP", locale='en_UK') if total_amount > 0 else "FREE",
-            'payment_method_type': "Prebooking only" if data['is_prebook'] else "",
+            'amount_total': amount_total,
+            'payment_method_type': "Pre-booking only" if data['is_prebook'] else "",
             'payment_method_2': "Save £2 on the door" if data['is_prebook'] else "",
             'ticket_row':rows, 
             'ticket_number': data['ticket_number'],
-            'additional_message':"With this ticket you must pay the remaning balance on the door." if data['is_prebook'] else "",
+            'additional_message': "With this ticket you must pay the remaning balance on the door." if data['is_prebook'] else "",
         })   
     return body
 
@@ -310,6 +319,7 @@ def lambda_handler(event, context):
         logger.info("Insert the body of the email into header and footer")
         header_footer_tmpl = Template(header_footer_file.read())
         html_content = header_footer_tmpl.substitute({
+            'type_of_ticket': "booking" if event['is_prebook'] else "purchase",
             'body':body,
             'event_name':event.get('parent_event_name', "this event.")
             })

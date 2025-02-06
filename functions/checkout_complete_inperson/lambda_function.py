@@ -143,7 +143,8 @@ def lambda_handler(event, context):
 
     attendees_table.put_item(Item=item)
 
-    is_prebook = True if "prebook" in line_items[0]['description'].lower() else False
+    # is_prebook = True if "pre-book" in line_items[0]['description'].lower() else False
+    is_prebook = True if status == "prebook" else False
 
     try:
         if event.get('send_standard_ticket', True):
