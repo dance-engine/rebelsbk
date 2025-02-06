@@ -33,9 +33,12 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
           </h3>
           {eventDateString ? <p>{eventDateString}</p> : null }
 
-          {basic ? null : <p className="mt-2 text-sm md:text-base leading-7 col-span-3 text-white">
-            {pass.description} 
-          </p> }
+          {basic ? null : 
+            <div className='mt-3'>
+              {pass.description.split("\n").map((line,idx)=>{ return <p key={`desc-line-${idx}`} className="mt-0 text-sm md:text-base leading-7 col-span-3 text-white">{line}</p>}) }
+            </div>
+             
+          }
 
         </div>
         
