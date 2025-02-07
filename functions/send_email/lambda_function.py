@@ -172,7 +172,7 @@ def generate_standard_ticket_body(data):
             'payment_method_2': "Save £2 on the door" if data['is_prebook'] else "",
             'ticket_row':rows, 
             'ticket_number': data['ticket_number'],
-            'additional_message': "With this ticket you must pay the remaning balance on the door." if data['is_prebook'] else "",
+            'additional_message': "With this ticket you must pay the remaining balance on the door." if data['is_prebook'] else "",
         })   
     return body
 
