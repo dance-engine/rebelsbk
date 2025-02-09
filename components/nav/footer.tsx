@@ -50,7 +50,7 @@ export default function Footer() {
       : footerColor.default;
 
   return (
-    <footer className={cn(`bg-gradient-to-br pt-12 pb-6`, footerColorCss)}>
+    <footer className={cn(`bg-gray-900 bg-gradient-to-br pt-12 pb-6`, footerColorCss)}>
       <Container className="relative" size="small">
         <div className="flex justify-center items-center gap-6 flex-wrap">
           
