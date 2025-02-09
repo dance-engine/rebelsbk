@@ -51,16 +51,18 @@ def create_individual_items(data):
             current_time = int(time.time())
             individual_item = {
                 "PK": f"EVENT#{parent_event}",
-                "SK": f"ITEM#{slug}",
+                "SK": f"EVENT#{parent_event}#ITEM#{slug}",
                 "slug": slug,
                 "name": item["name"],
                 "description": item.get("description", ""),
                 "current_price": item.get("current_price"),
-                "type": "individual-item",
-                "active": item.get("current_price", False) and item.get("active", False),
+                "active": item.get("active", False),
                 "tags": item.get("tags", []),
                 "created_at": current_time,
                 "updated_at": current_time,
+                "type": "individual-item",
+                "organisation": "rebel-sbk-events",
+                "price_id": item.get("price_id", None)
             }
 
             # Write the item to DynamoDB
@@ -90,7 +92,7 @@ def get_individual_items(event_slug=None):
     try:
         if event_slug:
             response = table.query(
-                KeyConditionExpression=Key("PK").eq(f"EVENT#{event_slug}") & Key("SK").begins_with("ITEM#")
+                KeyConditionExpression=Key("PK").eq(f"EVENT#{event_slug}") & Key("SK").begins_with(f"EVENT#{event_slug}#ITEM#")
             )
         else:
             response = table.query(

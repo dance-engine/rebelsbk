@@ -72,6 +72,9 @@ provider:
             - { "Fn::Join": [ "/", [ 
                 { "Fn::GetAtt": ["EventTable", "Arn" ] }, "index", "type-index" 
               ]]}
+            - { "Fn::Join": [ "/", [ 
+                { "Fn::GetAtt": ["EventTable", "Arn" ] }, "index", "organisation-index" 
+              ]]}
         - Effect: Allow
           Action:
             - lambda:InvokeFunction
@@ -151,6 +154,8 @@ resources:
             AttributeType: S
           - AttributeName: type
             AttributeType: S
+          - AttributeName: organisation
+            AttributeType: S
         KeySchema:
           - AttributeName: PK
             KeyType: HASH
@@ -166,7 +171,15 @@ resources:
               - AttributeName: SK
                 KeyType: RANGE
             Projection:
-              ProjectionType: 'ALL'        
+              ProjectionType: 'ALL'
+          - IndexName: organisation-index 
+            KeySchema:
+              - AttributeName: organisation 
+                KeyType: HASH
+              - AttributeName: SK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: 'ALL'                      
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES   
         TimeToLiveSpecification:
@@ -214,9 +227,9 @@ functions:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
       STRIPE_SECRET_KEY: ${param:stripeSecretKey}
-      CREATE_TICKET_LAMBDA: "${sls:stage}-create_ticket" #! Can't find a way to set this other than as a params that gets used byt function and the function itself
+      CREATE_TICKET_LAMBDA: "rebelsbk-${sls:stage}-create_ticket" #! Can't find a way to set this other than as a params that gets used byt function and the function itself
       ATTENDEE_GROUPS_LAMBDA: "${sls:stage}-attendee_groups"
-      TICKET_UPGRADE_LAMBDA: "${sls:stage}-ticket_upgrade"
+      TICKET_UPGRADE_LAMBDA: "rebelsbk-${sls:stage}-ticket_upgrade"
     layers:
       - !Ref StripeLambdaLayer
       # - !Ref DynamodbLambdaLayer
@@ -240,8 +253,9 @@ functions:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
       STRIPE_SECRET_KEY: ${param:stripeSecretKey}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
       ATTENDEE_GROUPS_LAMBDA: "${sls:stage}-attendee_groups"
+      EVENT_TABLE_NAME: ${param:eventTableName}      
     # layers:
     #   - !Ref DynamodbLambdaLayer
 
@@ -366,7 +380,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       FROM_EMAIL: ${param:fromEmail}
       SENDGRID_API_KEY: ${param:sendgridApiKey}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
       MAILDEV_IP: "3.254.106.153"
     layers:
       - !Ref SendmailLambdaLayer
@@ -385,7 +399,7 @@ functions:
     environment:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     # layers:
     #   - !Ref DynamodbLambdaLayer
     #   - !Ref GithubLambdaLayer
@@ -432,7 +446,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
       CREATE_TICKET_LAMBDA: "${sls:stage}-create_ticket"
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
       ATTENDEE_GROUPS_LAMBDA: "${sls:stage}-attendee_groups"
     # layers:
     #   - !Ref SendmailLambdaLayer
@@ -478,7 +492,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
       EVENT_TABLE_NAME: ${param:eventTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     events:
       - httpApi:
           path: /import_tickets
@@ -499,7 +513,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     events:
       - httpApi:
           path: /attendee_groups
@@ -529,7 +543,7 @@ functions:
     environment:
       STAGE_NAME: ${sls:stage}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
       EVENT_TABLE_NAME: ${param:eventTableName}
     events:
       - httpApi:
@@ -590,7 +604,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     events:
       - httpApi:
           path: /ticket_upgrade
@@ -611,7 +625,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     events:
       - httpApi:
           path: /ticket/activate
@@ -636,7 +650,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-meal_seating" # delete this, not used and wrong lambda name silly
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-meal_seating" # delete this, not used and wrong lambda name silly
     events:
       - httpApi:
           path: /meal/seating
@@ -660,7 +674,7 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
       ATTENDEES_TABLE_NAME: ${param:attendeesTableName}
-      SEND_EMAIL_LAMBDA: "${sls:stage}-send_email"
+      SEND_EMAIL_LAMBDA: "rebelsbk-${sls:stage}-send_email"
     events:
 
       - httpApi:
@@ -669,33 +683,14 @@ functions:
                                          
 #--------------------
 
-  EventCreate:
+  Events:
     runtime: python3.11
-    handler: event_create/lambda_function.lambda_handler
-    name: "rebelsbk-${sls:stage}-event_create"
+    handler: events/lambda_function.lambda_handler
+    name: "rebelsbk-${sls:stage}-events"
     package:
       patterns:
         - '!**/**'
-        - "event_create/**"
-        - "shared/**"
-    environment:
-      STAGE_NAME: ${sls:stage}
-      EVENT_TABLE_NAME: ${param:eventTableName}
-    events:
-      - httpApi:
-          path: /event/create
-          method: post
-
-#--------------------
-
-  EventGet:
-    runtime: python3.11
-    handler: event_get/lambda_function.lambda_handler
-    name: "rebelsbk-${sls:stage}-event_get"
-    package:
-      patterns:
-        - '!**/**'
-        - "event_get/**"
+        - "events/**"
         - "shared/**"
     layers:
       - !Ref StripeLambdaLayer        
@@ -703,10 +698,15 @@ functions:
       STAGE_NAME: ${sls:stage}
       EVENT_TABLE_NAME: ${param:eventTableName}
     events:
-
       - httpApi:
-          path: /event/get
+          path: /events
+          method: post
+      - httpApi:
+          path: /events
           method: get
+      - httpApi:
+          path: /events
+          method: put
 
 #--------------------
 

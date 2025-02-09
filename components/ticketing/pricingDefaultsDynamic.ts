@@ -20,10 +20,30 @@ export const individualTickets: IndividualTickets = {
 			studentPriceId: 'price_1QQZOtEWkmdeWsQPGgDY1I8x'
 		},
 	},		
+	March: { 
+		Prebook:{
+			cost: 2,
+			studentCost: 2,
+			isAvailable: true,
+			priceId: 'price_1QQZObEWkmdeWsQPPK90RMv5',
+			studentPriceId: 'price_1QQZOtEWkmdeWsQPGgDY1I8x'
+	 },
+	 Advanced:{
+		 cost: 12,
+		 studentCost: 10,
+		 isAvailable: true,
+		 priceId: 'price_1QQZObEWkmdeWsQPPK90RMv5',
+		 studentPriceId: 'price_1QQZOtEWkmdeWsQPGgDY1I8x'
+	 },
+ },		
  }
 
 export const initialSelectedOptions = {
 	Feb: { 
+		Prebook: false,
+		Advanced: false
+	},
+	March: { 
 		Prebook: false,
 		Advanced: false
 	}
@@ -54,7 +74,7 @@ export const passes: Passes = {
 }
 
 export const fullPassName = Object.keys(passes).at(0)
-export const days = ['Prebook']
+export const days = ['Feb','March']
 export const passTypes = Object.keys(individualTickets['Feb']).filter((item) => {
 	console.log(Object.keys(individualTickets['Feb']))
 	console.log(individualTickets['Feb'][item])

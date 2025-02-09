@@ -16,7 +16,7 @@ export const fullPassName = Object.keys(passes).filter((pass) => { return passes
   const pass = passes[passName]
   return pass.cost > passInfo.cost ? { passName: passName, cost: pass.cost } : passInfo
 },{passName:'None',cost:-1 }).passName //at(4)
-export const days = ['Feb']
+export const days = ['Feb','March']
 // export const passTypes = Object.keys(individualTickets['Saturday']).filter((item) => individualTickets['Saturday'][item].isAvailable) //['Party', 'Classes', 'Dinner']
 
-export const passTypes = ['Feb'] //.filter((item) => individualTickets['Feb'][item].isAvailable)
+export const passTypes = ['Prebook',"Advanced"] //.filter((item) => individualTickets['Feb'][item].isAvailable)

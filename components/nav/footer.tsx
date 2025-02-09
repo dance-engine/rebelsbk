@@ -41,6 +41,7 @@ export default function Footer() {
       orange: "text-white from-orange-500 to-orange-600",
       yellow: "text-white from-yellow-500 to-yellow-600",
       merseyside: "text-white from-chillired-300 to-chillired-500",
+      rbelsbk: "text-white from-chillired-300 to-chillired-500",
     },
   };
 
@@ -52,7 +53,7 @@ export default function Footer() {
   return (
     <footer className={cn(`bg-gray-900 bg-gradient-to-br pt-12 pb-6`, footerColorCss)}>
       <Container className="relative" size="small">
-        <div className="flex justify-center items-center gap-6 flex-wrap">
+        <div className="flex justify-center items-center gap-6 flex-wrap pb-3">
           
           <div className="flex gap-4">
             {footer.social && footer.social.facebook && (
@@ -135,24 +136,22 @@ export default function Footer() {
         </div>
         <div
           className={cn(
-            `absolute h-1 bg-gradient-to-r from-transparent`,
+            ` h-[2px] bg-gradient-to-r from-transparent`,
             theme.darkMode === "primary"
               ? `via-white`
               : `via-black dark:via-white`,
-            "to-transparent bottom-0 left-4 right-4 -z-1 opacity-5"
+            "to-transparent bottom-0 left-4 right-4 -z-1 opacity-20"
           )}
         />
         <div className="flex justify-center items-center gap-6 my-6 flex-col sm:flex-row">
           <div className="w-1/3 flex justify-center flex-1 ">
             <p className="text-center">
               Event organised by and related content copyright of{" "}
-              <a href="http://www.salsaliverpool.com/">Salsa Liverpool</a>
+              <a href="https://www.facebook.com/groups/271663524726430/?locale=en_GB">Salsa Rebel</a>
             </p>
           </div>
           <div className="w-1/3 flex justify-center flex-1">
-            <p className="text-center">This Event runs on Dance Engine owned by<br/>
-              <a href="https://adambardsley.co.uk">Adam Bardsley</a> & Connor Monaghan
-            </p>
+            <p className="text-center">This Event runs on <br/> <a href="https://danceengine.co.uk"> Dance Engine</a></p>
           </div>
           <div className="w-1/3 flex flex-col justify-center text-center flex-1">
             <p className="text-center"><Link href="tos">Terms of Service</Link></p>

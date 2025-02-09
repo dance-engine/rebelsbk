@@ -51,16 +51,22 @@ def create_passes(data):
             current_time = int(time.time())
             pass_item = {
                 "PK": f"EVENT#{parent_event}",
-                "SK": f"PASS#{slug}",
-                "slug": slug,
-                "name": pass_data["name"],
-                "description": pass_data.get("description", ""),
-                "current_price": pass_data.get("current_price"),
-                "type": "pass",
-                "active": pass_data.get("current_price", False) and pass_data.get("active", False),
-                "tags": pass_data.get("tags", []),
-                "created_at": current_time,
-                "updated_at": current_time,
+                "SK": f"EVENT#{parent_event}#PASS#{slug}",
+                "slug":             slug,
+                "name":             pass_data["name"],
+                "description":      pass_data.get("description", ""),
+                "current_price":    pass_data.get("current_price"),
+                # "active":           pass_data.get("current_price", False) and pass_data.get("active", False),
+                "active":           pass_data.get("active", False),
+                "tags":             pass_data.get("tags", []),
+                "created_at":       current_time,
+                "updated_at":       current_time,
+                "type":             "pass",
+                "organisation":     "rebel-sbk-events",
+                "price_id":         pass_data.get("price_id", None),
+                "saving":           pass_data.get("saving", 0),
+                "limit":            pass_data.get("limit", 0),
+                "number_sold":      0
             }
 
             # Write the pass to DynamoDB
@@ -75,10 +81,11 @@ def create_passes(data):
             for item in associated_items:
                 pass_item_mapping = {
                     "PK": f"EVENT#{parent_event}",
-                    "SK": f"PASS#{slug}#ITEM#{item}",
-                    "pass": f"PASS#{slug}",
-                    "item": f"ITEM#{item}",
+                    "SK": f"EVENT#{parent_event}#PASS#{slug}#ITEM#{item}",
+                    "pass": f"EVENT#{parent_event}#PASS#{slug}",
+                    "item": f"EVENT#{parent_event}#ITEM#{item}",
                     "type": "pass-item",
+                    "organisation": "rebel-sbk-events",
                 }
                 table.put_item(
                     Item=pass_item_mapping,
@@ -106,7 +113,7 @@ def get_passes(event_slug=None):
         if event_slug:
             # Query passes for a specific event
             response = table.query(
-                KeyConditionExpression=Key("PK").eq(f"EVENT#{event_slug}") & Key("SK").begins_with("PASS#")
+                KeyConditionExpression=Key("PK").eq(f"EVENT#{event_slug}") & Key("SK").begins_with(f"EVENT#{event_slug}#PASS#")
             )
         else:
             # Query all passes across all events using the type index
@@ -162,8 +169,8 @@ def update_passes(parent_event, updates_list):
                 raise ValueError("Each update must include a 'slug' and 'updates' dictionary.")
 
             # Construct update expressions
-            pk = f"EVENT#{parent_event}"
-            sk = f"PASS#{slug}"
+            pk = f"{parent_event}"
+            sk = f"{pk}#PASS#{slug}"
 
             update_expr_parts = []
             expr_attr_values = {}
@@ -192,7 +199,7 @@ def update_passes(parent_event, updates_list):
                 )
                 updated_passes.append({"slug": slug, "updated_at": current_time})
             except table.meta.client.exceptions.ConditionalCheckFailedException:
-                logger.warning("Pass does not exist: %s", slug)
+                logger.warning("Pass does not exist: \nslug = %s, \nPK = %s, \nSK = %s", slug, pk, sk)
                 raise ValueError(f"Pass with slug '{slug}' does not exist.")
 
         return updated_passes

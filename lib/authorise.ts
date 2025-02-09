@@ -6,7 +6,7 @@ const grantUsage = {
   "developer": ["#","/admin/users","/admin/stripe","/admin/import"],
   "content-manager": ['/admin/content'],
   "door-staff": ['/admin/ticketing','/admin/scan', '/admin/epos'],
-  "event-manager": ['/admin/ticketing.*','/admin/meal.*'] // Everything under ticketing
+  "event-manager": ['/admin/ticketing.*', '/admin/scan'] // Everything under ticketing
 }
 
 export const authUsage = (user,path) => {

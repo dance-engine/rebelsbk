@@ -59,8 +59,9 @@ export const Section = ({ children, color = "", className = "" , backgroundImage
         <div
         className="absolute inset-0 bg-gradient-to-b bg-cover from-gray-50 to-transparent dark:from-gray-900 dark:to-transparent z-1 "
         style={{
-          backgroundImage: `url(${backgroundImage})`,
+          backgroundImage: `url('${encodeURI(backgroundImage)}')`,
           backgroundPositionX: '50%',
+          backgroundPositionY: '20%',
           opacity: 0.7,
         }}
       />

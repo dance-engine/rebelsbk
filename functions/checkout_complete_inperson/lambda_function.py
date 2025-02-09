@@ -67,7 +67,7 @@ def get_ticket_number(email, student_ticket):
 def lambda_handler(event, context):
     try:
         event = parse_event(event)
-        event = validate_event(event, ['email', 'status', 'purchase_date'])
+        event = validate_event(event, ['email', 'status', 'purchase_date', 'event'])
         if event.get('line_items', None):
             validate_line_items(event['line_items'])
     except (ValueError, TypeError, KeyError) as e:
@@ -90,7 +90,29 @@ def lambda_handler(event, context):
     purchase_date = event.get('purchase_date', int(time.time()))
     student_ticket = event.get('student_ticket', False)
     checkout_session = event.get('checkout_session', 'unknown')
+    parent_event = event.get('event')
 
+    parent_event_data = event_table.get_item(Key={'PK':parent_event, 'SK':parent_event}).get('Item')
+    
+    if not parent_event_data:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({
+                'message': "Event not found"
+            })
+        }
+    
+    total_capacity = parent_event_data.get('total_capacity', None)
+    tickets_sold = parent_event_data.get('number_sold', 0)
+
+    if total_capacity is not None and tickets_sold >= total_capacity:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({
+                'message': "Event is at full capacity."
+            })
+        }
+    
     logger.info("Getting ticket number")
     ticket_number = get_ticket_number(email, student_ticket)
 
@@ -107,6 +129,10 @@ def lambda_handler(event, context):
         'status': status,
         'student_ticket': student_ticket,
         'checkout_session': checkout_session,
+        'parent_event': parent_event,
+        'marketing_preference': event.get('marketing'),
+        'questionnaire_answers':event.get("answers", {})
+
     }
 
     optional = ['schedule', 'meal_preferences', 'promo_code', 'history']
@@ -116,6 +142,9 @@ def lambda_handler(event, context):
             item[key] = event.get(key)
 
     attendees_table.put_item(Item=item)
+
+    # is_prebook = True if "pre-book" in line_items[0]['description'].lower() else False
+    is_prebook = True if status == "prebook" else False
 
     try:
         if event.get('send_standard_ticket', True):
@@ -130,13 +159,22 @@ def lambda_handler(event, context):
                         'email':email, 
                         'ticket_number':ticket_number, 
                         'line_items':line_items,
-                        'heading_message': event['heading_message'] if 'heading_message' in event else "THANK YOU FOR YOUR PURCHASE!"
+                        'parent_event': parent_event,
+                        'is_prebook': is_prebook,
+                        'parent_event_name':parent_event_data['name']
                     }, cls=DecimalEncoder),
                 )
             logger.info(response)
     except boto3.exceptions.Boto3Error as e:
         logger.error("Failed to invoke send_email lambda: %s", str(e))
-        record_fail(event, f"Failed to send confirmation email: {str(e)}")            
+        record_fail(event, f"Failed to send confirmation email: {str(e)}")   
+
+    event_table.update_item(
+        Key={'PK':parent_event, 'SK':parent_event},
+        UpdateExpression="SET number_sold = number_sold + :inc",
+        ExpressionAttributeValues={':inc': 1},
+        ConditionExpression="number_sold < total_capacity"
+    )                 
 
     return {
         'statusCode': 200,
@@ -145,4 +183,4 @@ def lambda_handler(event, context):
             'ticket_number': ticket_number,
             'email': email
         })
-    }                
+    }

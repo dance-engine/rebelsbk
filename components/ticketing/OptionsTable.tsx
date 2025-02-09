@@ -5,7 +5,7 @@ import { ICellProps } from './Cell';
 export const OptionsTable = ({headerClasses, toggleCellClasses, cellClasses, selectedOptions, clearOptions, setIndividualOption, priceModel, locked, hidden = false}) => {
   console.log(selectedOptions)
   return (
-    <table className={`option-table w-full mx-auto max-w-4xl table-auto border-collapse border-b border-ch}illired-300 ${hidden ? 'hidden' : ''}`}>
+    <table className={`option-table w-full mx-auto max-w-4xl table-auto border-collapse border-b border-chillired-300 ${hidden ? 'hidden' : ''}`}>
       <thead>
         <tr className='bg-chillired-300 text-white border-chillired-400'>
           <th className={headerClasses}>
@@ -27,6 +27,7 @@ export const OptionsTable = ({headerClasses, toggleCellClasses, cellClasses, sel
               {passType}
             </td>
             {days.map((day) => {
+              console.log("Day",day,"passType",passType)
               const cellProps = {
                 option: individualTickets[day][passType],
                 isSelected: selectedOptions[day][passType],

@@ -20,7 +20,7 @@ const headerColor = {
     orange: "text-white from-orange-400 to-orange-500",
     yellow: "text-white from-yellow-400 to-yellow-500",
     merseyside: "text-white from-richblack-400 to-richblack-500",
-    rebelsbk: "text-white dark:from-[#e83786] dark:to-[#b42a68]"
+    rebelsbk: "text-white dark:from-rebelred-400 dark:to-rebelred-800"
   },
 };
 
@@ -33,7 +33,7 @@ export default function Header({header, theme}:any) {
   
   return (
     <div
-      className={`header relative overflow-hidden bg-gradient-to-b ${headerColorCss}`}
+      className={`header relative overflow-hidden bg-gradient-to-br ${headerColorCss}`}
     >
       <Container size="custom" className="py-0 relative z-10 max-w-8xl">
         <div className="flex justify-between items-stretch gap-6">
@@ -48,7 +48,7 @@ export default function Header({header, theme}:any) {
               <span data-tina-field={tinaField(header, "name")} className="ml-2 hidden xs:inline">
                 
                 {header.name.replace("2024", "")}
-                <span className="hidden sm:inline md:hidden lg:inline">2024</span>
+                <span className="hidden sm:inline md:hidden lg:inline"> 2025</span>
               </span>
             </Link>
           </h4>

@@ -38,7 +38,7 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
             className="relative flex-shrink-0 md:w-2/5 flex justify-center order-first md:hidden md:order-last"
           >
             <Image
-              className={`w-full h-auto max-w-full rounded-lg mb-3 ${/.*\.svg/.test(data.image.src) ? "p-12 sm:p-24 md:p-0" : "nothing"}`}
+              className={`w-full h-auto max-w-[300px] md:max-w-[400px] rounded-lg mb-3 ${/.*\.svg/.test(data.image.src) ? "p-12 sm:p-24 md:p-0" : "nothing"}`}
               style={{ objectFit: "cover" }}
               alt={data.image.alt}
               src={data.image.src}
@@ -54,7 +54,7 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
               className="relative px-3 py-1 mb-8 text-md text-white font-bold tracking-wide title-font z-20 inline-block"
             >
               {data.tagline}
-              <span className="absolute w-full h-full left-0 top-0 rounded-full -z-1 bg-[#b42a68] opacity-100"></span>
+              <span className="absolute w-full h-full left-0 top-0 rounded-full -z-1 bg-rebelred-400 opacity-100"></span>
             </h2>
           )}
           
@@ -64,6 +64,7 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
               className={`w-full relative mb-10 text-4xl md:text-5xl font-extrabold tracking-normal leading-tight title-font md:block`}
             >
               <span
+                // style={{textShadow: '3px 3px 0px #000;'}}
                 className={`bg-clip-text text-transparent bg-gradient-to-r  ${
                   data.color === "primary"
                     ? `from-white to-gray-100`
@@ -79,6 +80,7 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
               {data.text && (
                 <div
                   data-tina-field={tinaField(data, "text")}
+                  style={{textShadow: '2px 2px 1px #000;'}}
                   className={`prose prose-lg mx-auto md:mx-0 mb-10 z-10 ${
                     data.color === "primary"
                       ? `prose-primary`

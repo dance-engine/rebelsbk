@@ -14,6 +14,7 @@ export type DayTickets = {
 };
 export type IndividualTickets = {
   Feb: DayTickets;
+  March: DayTickets;
 };
 
 export type PartialDayOption = { Prebook: boolean; }
