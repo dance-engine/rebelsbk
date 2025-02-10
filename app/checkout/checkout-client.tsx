@@ -109,7 +109,7 @@ export default function CheckoutClient() {
     if(!(userData?.marketing)) {
       newErrors = {...newErrors, 'marketing': `Can we send you info about events?`}
     } 
-    console.error(newErrors)
+    console.log("Errors?",newErrors)
     setErrors(newErrors)
     return Object.keys(newErrors).length < 1 ? true : false
   }
