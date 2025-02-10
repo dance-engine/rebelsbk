@@ -22,7 +22,7 @@ const buttonColorClasses = {
   merseyside:
     "text-chillired-500 bg-white hover:bg-gray-50 bg-gradient-to-r from-gray-50 to-white hover:to-gray-100",
   rebelsbk:
-    "text-white bg-white hover:bg-gray-50 bg-gradient-to-r from-rebelred-400 to-rebelred-600 hover:to-rebelred-700",
+    "text-white border border-1 hover:bg-gradient-to-r hover:from-rebelred-400  hover:to-rebelred-700",
   
 };
 
@@ -40,7 +40,7 @@ const invertedButtonColorClasses = {
   yellow:
     "text-yellow-500 bg-white hover:bg-gray-50 bg-gradient-to-r from-gray-50 to-white hover:to-gray-100",
     merseyside: 
-    "text-white-800 bg-chillired-500 hover:bg-chillired-600 bg-gradient-to-r from-chillired-400 to-chillired-600 hover:from-chillired-400 hover:to-chillired-500",
+    "text-white-800 hover:bg-chillired-600 bg-gradient-to-r from-chillired-400 to-chillired-600 hover:from-chillired-400 hover:to-chillired-500",
 };
 
 const linkButtonColorClasses = {
