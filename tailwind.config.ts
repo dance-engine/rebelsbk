@@ -146,6 +146,7 @@ module.exports = {
       typography: (theme) => ({
         DEFAULT: {
           css: {
+            maxWidth: "100ch",
             pre: {
               color: theme("colors.gray.700"),
               backgroundColor: theme("colors.gray.100"),

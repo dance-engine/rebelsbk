@@ -190,7 +190,7 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
                 </form>
                 
               </>
-            ) : "Select options in the table above to see the suggested packages" }
+            ) : "Select option(s) above to start your booking" }
            
           </div>
           

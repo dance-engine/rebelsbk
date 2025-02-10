@@ -75,11 +75,11 @@ export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
             </h3>
           )}
           <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex flex-col md:w-1/2">
+            <div className={`flex flex-col  ${data.text2 && data.text2.children && data.text2.children.length > 0 ? "md:w-1/2" : "md:w-full"}`}>
               {data.text && data.text.children && data.text.children.length > 0 &&  (
                 <div
                   data-tina-field={tinaField(data, "text")}
-                  className={`prose md:prose-lg mx-auto md:mx-0 mb-10 z-10 ${
+                  className={`prose md:prose-lg mx-auto md:mx-0 mb-6 z-10 ${
                     data.color === "primary"
                       ? `prose-primary`
                       : `dark:prose-dark`
@@ -90,7 +90,7 @@ export const Pricing = ({ data }: { data: PageBlocksPricing }) => {
               )}
 
               {data.actions && (
-                <div className="mt-10">
+                <div className="mt-0">
                   <Actions
                     className="justify-center md:justify-start py-2"
                     parentColor={data.color}

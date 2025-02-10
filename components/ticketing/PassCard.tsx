@@ -2,6 +2,7 @@ import React from 'react';
 import { fullPassName } from './pricingDefaults';
 import { moneyString } from '../../lib/useful'
 import { format, fromUnixTime } from "date-fns";
+import { BiRightArrowAlt } from "react-icons/bi";
 
 
 export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving, selected, included, basic, locked, hero= false}:
@@ -61,6 +62,18 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
         
         
       </div>
+
+      <button 
+          className={`relative flex w-56 mt-6 items-center px-7 py-3 font-semibold text-lg transition duration-150 ease-out  rounded-lg transform focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 whitespace-nowrap text-white bg-white hover:bg-gray-50 bg-gradient-to-r from-rebelred-400 to-rebelred-600 hover:to-rebelred-700`}
+        >
+          Select this option
+          
+            <BiRightArrowAlt
+              className={`ml-1 -mr-1 w-6 h-6 opacity-80`}
+            />
+         
+        </button>
+
       { selected ? 
           basic ? <div className='w-full h-full opacity-90 bg-richblack-700 absolute left-0 top-0 rounded-3xl flex flex-col items-center justify-center'>Selected</div> 
             : <div className={`w-full h-full opacity-90 bg-richblack-700 absolute left-0 top-0 rounded-3xl flex flex-col items-center justify-center ${passPadding}`}>
@@ -74,6 +87,8 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
                 <h2 className='font-bold text-gray-400 text-3xl'>Included</h2>
               <p className='text-gray-500'>This item is included in your selection</p>
         </div> : null }
+
+        
     </div>
   );
 };

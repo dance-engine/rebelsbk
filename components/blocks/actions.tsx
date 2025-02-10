@@ -21,6 +21,8 @@ const buttonColorClasses = {
     "text-gray-800 bg-yellow-500 hover:bg-yellow-600 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500",
   merseyside:
     "text-chillired-500 bg-white hover:bg-gray-50 bg-gradient-to-r from-gray-50 to-white hover:to-gray-100",
+  rebelsbk:
+    "text-white bg-white hover:bg-gray-50 bg-gradient-to-r from-rebelred-400 to-rebelred-600 hover:to-rebelred-700",
   
 };
 
@@ -75,7 +77,7 @@ export const Actions = ({
           let element = null;
           if (action.type === "button") {
             element = (
-              <Link key={index} href={action.link ? action.link : "/"}>
+              <Link key={index} href={action.link ? action.link : "/"} target="_blank">
                 <button
                   data-tina-field={tinaField(action)}
                   className={`z-10 relative flex items-center px-7 py-3 font-semibold text-lg transition duration-150 ease-out  rounded-lg transform focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 whitespace-nowrap ${
@@ -84,7 +86,7 @@ export const Actions = ({
                       : buttonColorClasses[theme.color]
                   }`}
                 >
-                  {action.label}
+                  {action.label} 
                   {action.icon && (
                     <BiRightArrowAlt
                       className={`ml-1 -mr-1 w-6 h-6 opacity-80`}
