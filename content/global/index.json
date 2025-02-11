@@ -8,7 +8,12 @@
     "color": "primary",
     "nav": [
       {
-        "href": "feedback",
+        "href": "https://facebook.com/events/s/rebel-sbk-convention-3rd-editi/1079048540365438/",
+        "label": "Convention",
+        "visible": true
+      },
+      {
+        "href": "/feedback",
         "label": "Feedback",
         "visible": true
       }
