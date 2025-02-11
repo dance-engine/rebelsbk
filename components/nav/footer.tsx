@@ -147,7 +147,7 @@ export default function Footer() {
           <div className="w-1/3 flex justify-center flex-1 ">
             <p className="text-center">
               Event organised by and related content copyright of{" "}
-              <a href="https://www.facebook.com/groups/271663524726430/?locale=en_GB">Salsa Rebel</a>
+              <a href="https://www.facebook.com/groups/271663524726430/?locale=en_GB">Rebel SBK Events</a>
             </p>
           </div>
           <div className="w-1/3 flex justify-center flex-1">
