@@ -19,8 +19,8 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
   const eventDateString = pass?.event?.start_time ? format(fromUnixTime(pass.event.start_time),'EEEE do MMMM, h:mmaaa'): null
   const prebookTicket = /prebook/.test(pass.slug) ? true : false
   const passImage = pass.slug == 'february-prebook' 
-    ? "url('http://localhost:3000/uploads/jery-manoli-andreas.png')" : pass.slug == 'march-prebook' 
-    ? "url('http://localhost:3000/uploads/jeydikson-andreas.png')" : ''
+    ? "url('/uploads/jery-manoli-andreas.png')" : pass.slug == 'march-prebook' 
+    ? "url('/uploads/jeydikson-andreas.png')" : ''
     
   return (
     <div
@@ -34,7 +34,7 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
       <div className={`grid grid-cols-5 gap-2 md:flex flex-wrap md:flex-nowrap md:justify-between h-full w-full ${cardWidthClasses}`}>
 
         <div className='col-span-3'>
-          
+
           {eventDateString ? <p>{eventDateString}</p> : null }
           <h3 id={passName} className={`${titleTextSize} leading-7 text-rebelred-600 font-black uppercase w-full md:w-auto col-span-2 m-h-12`}>
             {pass.name}
