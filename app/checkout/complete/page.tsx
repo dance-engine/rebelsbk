@@ -11,7 +11,7 @@ export default function CheckoutPage() {
           <Icon data={{name: "BiUser", color: "blue", style: "circle", size: "medium"}} className="mr-2 border border-richblack-700"></Icon>
           Checkout Complete
         </h2>
-        <p className="text-base">You ticket have been emailed to you</p>
+        <p className="text-base">Your ticket(s) have been emailed to you</p>
         <div className="flex pt-6"><a href="/" className="block py-2 px-4 bg-blue-500 text-white rounded-lg font-semibold shadow-sm" >Back to Homepage</a></div>
       </Container>
     </Layout>
