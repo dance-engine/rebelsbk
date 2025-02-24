@@ -8,6 +8,7 @@ import { Inter as FontSans, Lato, Nunito } from "next/font/google";
 import { cn } from "@lib/utils";
 import { Metadata } from "next";
 import client from "@tina/__generated__/client";
+import Script from 'next/script';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -56,6 +57,10 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
+    <Script
+        src="https://scripts.withcabin.com/hello.js"
+        strategy="afterInteractive"
+      />
       <body
         className={cn("min-h-screen flex flex-col antialiased", fontVariable)}
       >
