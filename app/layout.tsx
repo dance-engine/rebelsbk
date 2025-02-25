@@ -9,6 +9,7 @@ import { cn } from "@lib/utils";
 import { Metadata } from "next";
 import client from "@tina/__generated__/client";
 import Script from 'next/script';
+import { Analytics } from "@vercel/analytics/react"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -57,10 +58,11 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
-    <Script
+      <Script
         src="https://scripts.withcabin.com/hello.js"
         strategy="afterInteractive"
       />
+      <Analytics/>
       <body
         className={cn("min-h-screen flex flex-col antialiased", fontVariable)}
       >
