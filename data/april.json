@@ -4,12 +4,12 @@
  "category": "Party",
  "created_at": 1738272811,
  "description": "A Really great party in April",
- "end_time": 1737937858,
+ "end_time": 1745605800,
  "name": "Rebel SBK Noches April",
  "number_sold": 22,
  "organisation": "rebel-sbk-events",
  "slug": "rebel-sbk-noches-april",
- "start_time": 1731937858,
+ "start_time": 1745605800,
  "total_capacity": 150,
  "type": "event"
 }
@@ -36,7 +36,7 @@
   "active": true,
   "created_at": 1738272845,
   "current_price": 0,
-  "description": "",
+  "description": "Flower Power with your Rebel, Andreas",
   "name": "Rebel SBK Noches April Pre-book",
   "organisation": "rebel-sbk-events",
   "slug": "april-prebook",

@@ -1,0 +1,56 @@
+{
+ "PK": "EVENT#rebel-sbk-noches-may",
+ "SK": "EVENT#rebel-sbk-noches-may",
+ "category": "Party",
+ "created_at": 1738272811,
+ "description": "A Really great party in may",
+ "end_time": 1745605800,
+ "name": "Rebel SBK Noches May",
+ "number_sold": 22,
+ "organisation": "rebel-sbk-events",
+ "slug": "rebel-sbk-noches-may",
+ "start_time": 1745605800,
+ "total_capacity": 150,
+ "type": "event"
+}
+
+{
+  "PK": "EVENT#rebel-sbk-noches-may",
+  "SK": "EVENT#rebel-sbk-noches-may#ITEM#may-prebook",
+  "active": true,
+  "created_at": 1738272827,
+  "current_price": 0,
+  "description": "Book in advance and save on the door.",
+  "name": "May Prebook",
+  "organisation": "rebel-sbk-events",
+  "slug": "may-prebook",
+  "tags": [
+  ],
+  "type": "individual-item",
+  "updated_at": 1738272827
+ }
+
+ {
+  "PK": "EVENT#rebel-sbk-noches-may",
+  "SK": "EVENT#rebel-sbk-noches-may#PASS#may-prebook",
+  "active": true,
+  "created_at": 1738272845,
+  "current_price": 0,
+  "description": "Flower Power with your Rebel, Andreas",
+  "name": "Rebel SBK Noches May Pre-book",
+  "organisation": "rebel-sbk-events",
+  "slug": "may-prebook",
+  "tags": [
+  ],
+  "type": "pass",
+  "updated_at": 1738876112
+ }
+
+ {
+  "PK": "EVENT#rebel-sbk-noches-may",
+  "SK": "EVENT#rebel-sbk-noches-may#PASS#may-prebook#ITEM#may-prebook",
+  "item": "EVENT#rebel-sbk-noches-may#ITEM#may-prebook",
+  "organisation": "rebel-sbk-events",
+  "pass": "EVENT#rebel-sbk-noches-may#PASS#may-prebook",
+  "type": "pass-item"
+ }
