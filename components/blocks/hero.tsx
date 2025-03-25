@@ -80,7 +80,7 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
               {data.text && (
                 <div
                   data-tina-field={tinaField(data, "text")}
-                  style={{textShadow: '2px 2px 1px #000;'}}
+                  style={{textShadow: '2px 2px 1px #000'}}
                   className={`prose prose-lg mx-auto md:mx-0 mb-10 z-10 ${
                     data.color === "primary"
                       ? `prose-primary`

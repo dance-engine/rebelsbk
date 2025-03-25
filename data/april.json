@@ -1,0 +1,56 @@
+{
+ "PK": "EVENT#rebel-sbk-noches-april",
+ "SK": "EVENT#rebel-sbk-noches-april",
+ "category": "Party",
+ "created_at": 1738272811,
+ "description": "A Really great party in April",
+ "end_time": 1737937858,
+ "name": "Rebel SBK Noches April",
+ "number_sold": 22,
+ "organisation": "rebel-sbk-events",
+ "slug": "rebel-sbk-noches-april",
+ "start_time": 1731937858,
+ "total_capacity": 150,
+ "type": "event"
+}
+
+{
+  "PK": "EVENT#rebel-sbk-noches-april",
+  "SK": "EVENT#rebel-sbk-noches-april#ITEM#april-prebook",
+  "active": true,
+  "created_at": 1738272827,
+  "current_price": 0,
+  "description": "Book in advance and save on the door.",
+  "name": "April Prebook",
+  "organisation": "rebel-sbk-events",
+  "slug": "april-prebook",
+  "tags": [
+  ],
+  "type": "individual-item",
+  "updated_at": 1738272827
+ }
+
+ {
+  "PK": "EVENT#rebel-sbk-noches-april",
+  "SK": "EVENT#rebel-sbk-noches-april#PASS#april-prebook",
+  "active": true,
+  "created_at": 1738272845,
+  "current_price": 0,
+  "description": "",
+  "name": "Rebel SBK Noches April Pre-book",
+  "organisation": "rebel-sbk-events",
+  "slug": "april-prebook",
+  "tags": [
+  ],
+  "type": "pass",
+  "updated_at": 1738876112
+ }
+
+ {
+  "PK": "EVENT#rebel-sbk-noches-april",
+  "SK": "EVENT#rebel-sbk-noches-april#PASS#april-prebook#ITEM#april-prebook",
+  "item": "EVENT#rebel-sbk-noches-april#ITEM#april-prebook",
+  "organisation": "rebel-sbk-events",
+  "pass": "EVENT#rebel-sbk-noches-april#PASS#april-prebook",
+  "type": "pass-item"
+ }

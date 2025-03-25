@@ -18,9 +18,11 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
     included ? 'hover:border-richblack-500 cursor-not-allowed' : 'hover:border-white cursor-pointer'
   const eventDateString = pass?.event?.start_time ? format(fromUnixTime(pass.event.start_time),'EEEE do MMMM, h:mmaaa'): null
   const prebookTicket = /prebook/.test(pass.slug) ? true : false
-  const passImage = pass.slug == 'february-prebook' 
-    ? "url('/uploads/jery-manoli-andreas.png')" : pass.slug == 'march-prebook' 
-    ? "url('/uploads/jeydikson-andreas.png')" : ''
+  const passImage = pass.slug == 'february-prebook' ? "url('/uploads/jery-manoli-andreas.png')" 
+    : pass.slug == 'march-prebook' ? "url('/uploads/jeydikson-andreas.png')" 
+    : pass.slug == 'april-prebook' ? "url('/uploads/andreas-flower.png')" 
+    : pass.slug == 'may-prebook' ? "url('/uploads/andreas-tropical.png')" 
+    : ''
     
   return (
     <div
@@ -45,7 +47,6 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
             <div className='mt-3'>
               {pass.description.split("\n").map((line,idx)=>{ return <p key={`desc-line-${idx}`} className="mt-0 text-sm md:text-base leading-7 col-span-3 text-white">{line}</p>}) }
             </div>
-             
           }
 
         </div>
@@ -57,7 +58,7 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
           </span>
           {hasASaving && !basic? (
           <div className="mt-0 flex items-baseline w-full gap-x-2 place-content-end	md:place-content-start ">
-            <span className="text-base font-semibold leading-7 text-gold-500 text-right leading-none">
+            <span className="text-base font-semibold text-gold-500 text-right leading-none">
             Save £{priceModel == "studentCost" ? (pass.studentSaving % 1 != 0 ? pass.studentSaving.toFixed(2) : pass.studentSaving) : (pass.saving % 1 != 0 ? pass.saving.toFixed(2) : pass.saving)}{included ? " included" : " on entry"}  
             </span>
           </div>
