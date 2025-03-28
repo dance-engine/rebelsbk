@@ -30,7 +30,9 @@ export default function PassCards({passes, individualTickets, currentSelectedOpt
     setSelectedOptions(addToOptions(initialOptions,itemListToOptions(itemsInPassName,setTo,individualTickets)))
     shouldScroll && scrollToElement()
   }  
-  const passesAvailable = Object.keys(passes).filter((item) => passes[item].isAvailable)
+  const passesAvailable = Object.keys(passes)
+    .filter((item) => passes[item].isAvailable)
+    .filter((item) => ((passes[item].event.start_time*1000) + (1000*60*60)) > Date.now())
   const passToDisplay = withHero ? passesAvailable.filter((item)=>item !== fullPassName) : passesAvailable
   const numPasses = passToDisplay.length
   const columns = numPasses > 4 ? 4 : numPasses

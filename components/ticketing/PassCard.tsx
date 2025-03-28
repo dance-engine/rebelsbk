@@ -23,10 +23,10 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
     : pass.slug == 'april-prebook' ? "url('/uploads/andreas-flower.png')" 
     : pass.slug == 'may-prebook' ? "url('/uploads/andreas-tropical.png')" 
     : ''
-    
+  const offSale = ((pass.event.start_time*1000) - (1000*60*60*2)) < Date.now()
   return (
     <div
-      onClick={locked ? ()=>{console.log('locked')} : clickFunction}
+      onClick={locked || offSale ? ()=>{console.log('locked')} : clickFunction}
       key={passName}
       title={passName}
       className={`relative flex flex-col justify-between rounded-3xl bg-richblack-600 ${passPadding} shadow-xl 
@@ -36,7 +36,6 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
       <div className={`grid grid-cols-5 gap-2 md:flex flex-wrap md:flex-nowrap md:justify-between h-full w-full ${cardWidthClasses}`}>
 
         <div className='col-span-3'>
-
           {eventDateString ? <p>{eventDateString}</p> : null }
           <h3 id={passName} className={`${titleTextSize} leading-7 text-rebelred-600 font-black uppercase w-full md:w-auto col-span-2 m-h-12`}>
             {pass.name}
@@ -79,6 +78,10 @@ export const PassCard = ({passName, clickFunction, pass, priceModel, hasASaving,
             />
          
         </button>
+      { offSale ? <div className={`w-full h-full opacity-90 bg-richblack-700 absolute left-0 top-0 rounded-3xl flex flex-col items-center justify-center ${passPadding}`}>
+                <h2 className='font-bold text-3xl leading-tight'>Priority Closed</h2>
+              <p>Sorry priority list is now closed</p>
+        </div> : null }
 
       { selected ? 
           basic ? <div className='w-full h-full opacity-90 bg-richblack-700 absolute left-0 top-0 rounded-3xl flex flex-col items-center justify-center'>Selected</div> 

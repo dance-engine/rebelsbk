@@ -131,13 +131,13 @@ const PricingTable = ({fullPassFunction,scrollToElement}:{fullPassFunction?:Func
   const studentDiscountAvailable = false
   
   if(error) { return <div>error</div>}
-  if(isLoading) { return <div>isLoading</div>}
+  if(isLoading) { return <div className="flex justify-center top-0"><Spinner className="w-12 h-12"/></div>}
   
   const has_events = pricingData?.length > 0 
   if(has_events) {
     return (
       <div className="table-container w-full flex justify-center flex-col md:pt-0 max-w-full lg:mx-auto md:mx-3 col-span-5 text-xs md:text-base">
-        { isValidating ? <Spinner className="flex absolute top-0"/> : null }
+        { isValidating ? <div className="flex justify-center absolute top-0"><Spinner className="w-6 h-6"/></div> : null }
         <PassCards 
           passes={passes}
           individualTickets={individualTickets}
