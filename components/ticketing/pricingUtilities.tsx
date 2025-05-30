@@ -243,7 +243,8 @@ const pricingDataToPasses = (pricingData) => {
         studentSaving: 2,
         combination: pass.associated_items.map(item => `${event.SK} ${item.item}`),
         description: pass.description,
-        priceId: 'price_FAKED',
+        // priceId: 'price_1RU7TjD7BDAnBUQHhv4LAjpm', // Dance Engine Helf Price
+        priceId: 'price_1RU7ZFRWBoTdG7OYpEJkpUFl',  // Custoemr Demo held price
         studentPriceId: 'none',
         slug: pass.slug,
         event: event

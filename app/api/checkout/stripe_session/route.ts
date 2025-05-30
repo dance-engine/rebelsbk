@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 
 export async function POST(request: NextRequest) {
+  console.log("Creating Stripe Checkout Session...")
   const data = await request.json()
   const userData = data.userData
   const attendee = {
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
   console.log("Checkout Session:",checkoutSessionObject)
   try {
     // Create Checkout Sessions from body params.
-    const session = await stripe.checkout.sessions.create(checkoutSessionObject);
+    const session = await stripe.checkout.sessions.create(checkoutSessionObject, { stripeAccount: 'acct_1RT4baRWBoTdG7OY',  });
     console.log("session:",session)
     return NextResponse.json({clientSecret: session.client_secret});
   } catch (err) {
