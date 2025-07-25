@@ -16,7 +16,7 @@ export default async function Page({
   console.log("PAGE:",params,clerkregex.test(params.filename[0]));
   try {
     const data = await client.queries.page({
-      relativePath: `${params.filename}.mdx`,
+      relativePath: `${params.filename.join("/")}.mdx`,
     });
 
     return (
